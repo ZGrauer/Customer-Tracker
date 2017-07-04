@@ -1,6 +1,7 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 
 import { Customer } from './customers/customer.model';
+import { CustomerService } from './customers/customer.service';
 import '../../node_modules/primeng/resources/themes/omega/theme.css';
 import '../../node_modules/primeng/resources/primeng.min.css';
 import '../../public/stylesheets/font-awesome-4.7.0/css/font-awesome.min.css';
@@ -8,16 +9,21 @@ import '../../public/stylesheets/font-awesome-4.7.0/css/font-awesome.min.css';
 @Component({
     selector: 'my-app',
     templateUrl: './app.component.html',
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    providers: [CustomerService]
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
     displayDialog: boolean;
     selectedCustomer: Customer;
     newCustomer: boolean;
     customer: Customer;
-    customers: Customer[] = [new Customer(123456789, 'Test Customer', 'Engaged ESSS', 'Zach', new Date('May 27, 2017 12:00:00'), new Date('May 27, 2017 12:00:00'), 'Zach'),new Customer(987654321, 'Sprint', 'Complete', 'Tina', new Date('May 27, 2017 12:00:00'), new Date('May 27, 2017 12:00:00'), 'Zach')];
+    customers: Customer[] = [];
 
-    constructor() {}
+    constructor(private customerService: CustomerService) {}
+
+    ngOnInit() {
+        this.customers = this.customerService.getCustomers();
+    }
 
     showDialogToAdd() {
         this.newCustomer = true;
@@ -27,7 +33,8 @@ export class AppComponent {
 
     save() {
         if(this.newCustomer)
-            this.customers.push(this.customer);
+            //this.customers.push(this.customer);
+            this.customerService.addCustomer(this.customer);
         else
             this.customers[this.findSelectedCustomerIndex()] = this.customer;
 
@@ -36,7 +43,8 @@ export class AppComponent {
     }
 
     delete() {
-        this.customers.splice(this.findSelectedCustomerIndex(), 1);
+        //this.customers.splice(this.findSelectedCustomerIndex(), 1);
+        this.customerService.deleteCustomer(this.selectedCustomer);
         this.customer = null;
         this.displayDialog = false;
     }
