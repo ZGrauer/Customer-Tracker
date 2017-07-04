@@ -1,38 +1,51 @@
 <h1>Customer Tracker</h1>
-<div class="container">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <app-customer [customer]="customer[0]"></app-customer>
-        </div>
-    </div>
-</div>
 <hr />
-<p-dataTable [value]="customer" selectionMode="single" [(selection)]="selectedCar" (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="10" [responsive]="true">
-      <p-header>CRUD</p-header>
+<p-dataTable #dt [value]="customers" selectionMode="single" [(selection)]="selectedCustomer" (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="10" [responsive]="true" [immutable]="false">
+      <p-header>Customer CRUD</p-header>
       <p-column field="h1" header="H1" [sortable]="true"></p-column>
       <p-column field="name" header="Cust Name" [sortable]="true"></p-column>
       <p-column field="status" header="Build Status" [sortable]="true"></p-column>
       <p-column field="user" header="ESSS IPM" [sortable]="true"></p-column>
-      <p-footer><div class="ui-helper-clearfix" style="width:100%"><button type="button" pButton icon="fa-plus" style="float:left" (click)="showDialogToAdd()" label="Add"></button></div></p-footer>
+      <p-column field="initialDt" header="Initial Contact" [sortable]="true" ></p-column>
+      <p-column field="updateDt" header="Last Update" [sortable]="true"></p-column>
+      <p-column field="updateUser" header="Last Update By" [sortable]="true"></p-column>
+      <p-footer>
+          <div class="ui-helper-clearfix" style="width:100%">
+              <button type="button" pButton icon="fa-plus" style="float:left" (click)="showDialogToAdd()" label="Add"></button>
+              <button type="button" pButton icon="fa-file-o" iconPos="left" label="CSV" (click)="dt.exportCSV()"></button>
+          </div>
+      </p-footer>
 </p-dataTable>
 
-<p-dialog header="Car Details" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [modal]="true">
-      <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad" *ngIf="car">
+<p-dialog header="Customer Details" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [modal]="true">
+      <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad" *ngIf="customer">
           <div class="ui-grid-row">
-              <div class="ui-grid-col-4"><label for="vin">Vin</label></div>
-              <div class="ui-grid-col-8"><input pInputText id="vin" [(ngModel)]="customer.h1" /></div>
+              <div class="ui-grid-col-4"><label for="h1">H1</label></div>
+              <div class="ui-grid-col-8"><input pInputText id="h1" [(ngModel)]="customer.h1" /></div>
           </div>
           <div class="ui-grid-row">
-              <div class="ui-grid-col-4"><label for="brand">Year</label></div>
-              <div class="ui-grid-col-8"><input pInputText id="brand" [(ngModel)]="customer.name" /></div>
+              <div class="ui-grid-col-4"><label for="name">Name</label></div>
+              <div class="ui-grid-col-8"><input pInputText id="name" [(ngModel)]="customer.name" /></div>
           </div>
           <div class="ui-grid-row">
-              <div class="ui-grid-col-4"><label for="brand">Brand</label></div>
-              <div class="ui-grid-col-8"><input pInputText id="brand" [(ngModel)]="customer.status" /></div>
+              <div class="ui-grid-col-4"><label for="status">Status</label></div>
+              <div class="ui-grid-col-8"><input pInputText id="status" [(ngModel)]="customer.status" /></div>
           </div>
           <div class="ui-grid-row">
-              <div class="ui-grid-col-4"><label for="color">Color</label></div>
-              <div class="ui-grid-col-8"><input pInputText id="color" [(ngModel)]="customer.user" /></div>
+              <div class="ui-grid-col-4"><label for="user">ESSS IPM</label></div>
+              <div class="ui-grid-col-8"><input pInputText id="user" [(ngModel)]="customer.user" /></div>
+          </div>
+          <div class="ui-grid-row">
+              <div class="ui-grid-col-4"><label for="initialDt">Initial Contact Date</label></div>
+              <div class="ui-grid-col-8"><p-calendar id="initialDt" [(ngModel)]="customer.initialDt" [inline]="true"></p-calendar></div>
+          </div>
+          <div class="ui-grid-row">
+              <div class="ui-grid-col-4"><label for="updateDt">Last Update Date</label></div>
+              <div class="ui-grid-col-8"><p-calendar id="updateDt" [(ngModel)]="customer.updateDt" [inline]="true"></p-calendar></div>
+          </div>
+          <div class="ui-grid-row">
+              <div class="ui-grid-col-4"><label for="updateUser">Last Update By</label></div>
+              <div class="ui-grid-col-8"><input pInputText id="updateUser" [(ngModel)]="customer.updateUser" /></div>
           </div>
       </div>
       <p-footer>

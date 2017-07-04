@@ -7,7 +7,7 @@ import 'rxjs/add/operator/toPromise';
 
 import { AppComponent } from "./app.component";
 import { CustomerComponent } from './customers/customer.component';
-import { InputTextModule, DataTableModule, ButtonModule, DialogModule } from 'primeng/primeng';
+import { InputTextModule, DataTableModule, ButtonModule, DialogModule, CalendarModule } from 'primeng/primeng';
 
 @NgModule({
     declarations: [
@@ -21,7 +21,8 @@ import { InputTextModule, DataTableModule, ButtonModule, DialogModule } from 'pr
         InputTextModule,
         DataTableModule,
         ButtonModule,
-        DialogModule],
+        DialogModule,
+        CalendarModule],
     bootstrap: [AppComponent]
 })
 export class AppModule {
