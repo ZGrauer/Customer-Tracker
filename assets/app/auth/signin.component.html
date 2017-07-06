@@ -1,13 +1,31 @@
-<div class="ui-g-12 ui-md-6 ui-lg-4 ui-grid-responsive ui-fluid ui-grid-pad">
-    <div class="ui-grid-row">
-        <div class="ui-grid-col-4"><label for="email">Email</label></div>
-        <div class="ui-grid-col-8"><input pInputText id="email" [(ngModel)]="email" placeholder="Required"/></div>
-    </div>
-    <div class="ui-grid-row">
-        <div class="ui-grid-col-4"><label for="password">Password</label></div>
-        <div class="ui-grid-col-8"><input type="password" [(ngModel)]="password" placeholder="Required"/></div>
-    </div>
-    <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-        <button type="button" pButton icon="fa-check" (click)="onSubmit()" label="Login"></button>
-    </div>
-</div>
+<p-growl [value]="msgs" sticky="sticky"></p-growl>
+
+<form [formGroup]="loginform" (ngSubmit)="onSubmit(loginform.value)">
+    <p-panel header="Login">
+        <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-3"><label for="email">Email</label></div>
+                <div class="ui-grid-col-6"><input pInputText type="email" id="email" formControlName="email" [(ngModel)]="email" placeholder="Required" /></div>
+                <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+                    <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!loginform.controls['email'].valid&&loginform.controls['email'].dirty">
+                        <i class="fa fa-close"></i> Valid email is required
+                    </div>
+                </div>
+            </div>
+            <div class="ui-grid-row">
+                <div class="ui-grid-col-3"><label for="password">Password</label></div>
+                <div class="ui-grid-col-6"><input type="password" pPassword id="password" formControlName="password" [(ngModel)]="password" placeholder="Required - Min 6" /></div>
+                <div class="ui-grid-col-3">
+                    <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!loginform.controls['password'].valid&&loginform.controls['password'].dirty">
+                        <i class="fa fa-close"></i>
+                        <span *ngIf="loginform.controls['password'].errors['required']">Password is required</span>
+                        <span *ngIf="loginform.controls['password'].errors['minlength']">Must be longer than 6 characters</span>
+                    </div>
+                </div>
+            </div>
+            <div class="ui-grid-col-3">
+                <button type="button" pButton icon="fa-check" type="submit" label="Login" [disabled]="!loginform.valid"></button>
+            </div>
+        </div>
+    </p-panel>
+</form>

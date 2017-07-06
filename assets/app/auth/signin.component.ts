@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import {Validators, FormControl, FormGroup, FormBuilder} from '@angular/forms';
 import { Router } from "@angular/router";
 
 import { User } from "./user.model";
@@ -12,14 +13,22 @@ import '../../../public/stylesheets/font-awesome-4.7.0/css/font-awesome.min.css'
     selector: 'app-signin',
     templateUrl: './signin.component.html'
 })
-export class SigninComponent {
+export class SigninComponent implements OnInit {
     email: String;
     password: String;
     displayDialog: boolean = false;
+    loginform: FormGroup;
 
-    constructor(private authService: AuthService, private router: Router) {}
+    constructor(private authService: AuthService, private router: Router, private fb: FormBuilder) {}
 
-    onSubmit() {
+    ngOnInit() {
+        this.loginform = this.fb.group({
+            'email': new FormControl('', Validators.compose([Validators.required, Validators.email])),
+            'password': new FormControl('', Validators.compose([Validators.required, Validators.minLength(6)])),
+        });
+    }
+
+    onSubmit(value: string) {
         this.authService.signin(this.email, this.password)
             .subscribe(
                 data => {

@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import {Validators, FormControl, FormGroup, FormBuilder} from '@angular/forms';
+import {Validators, FormControl, FormGroup, FormBuilder, AbstractControl} from '@angular/forms';
 
 
 import { User } from './user.model';
@@ -18,16 +18,24 @@ export class SignupComponent implements OnInit {
     selectedUser: User;
     newUser: boolean;
     user: User;
+    userform: FormGroup;
 
-    constructor(private authService: AuthService) { }
+    constructor(private authService: AuthService, private fb: FormBuilder) { }
 
     ngOnInit() {
         this.newUser = true;
         this.user = new User('', '', '', '', false, false);
         this.displayDialog = true;
+        this.userform = this.fb.group({
+            'firstName': new FormControl('', Validators.required),
+            'lastName': new FormControl('', Validators.required),
+            'password': new FormControl('', Validators.compose([Validators.required, Validators.minLength(6)])),
+            'email': new FormControl('', Validators.compose([Validators.required, Validators.email])),
+            'admin': new FormControl('', Validators.required)
+        });
     }
 
-    save() {
+    save(value: string) {
         if (this.newUser) {
             //this.customers.push(this.customer);
             this.authService.addUser(this.user)

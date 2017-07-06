@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule }    from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -22,7 +22,9 @@ import {
     DialogModule,
     CalendarModule,
     TabMenuModule,
-    PasswordModule
+    PasswordModule,
+    GrowlModule,
+    PanelModule
  } from 'primeng/primeng';
 
 import 'rxjs/add/operator/toPromise';
@@ -41,6 +43,7 @@ import 'rxjs/add/operator/toPromise';
         BrowserModule,
         BrowserAnimationsModule,
         FormsModule,
+        ReactiveFormsModule,
         HttpModule,
         routing,
         InputTextModule,
@@ -50,7 +53,9 @@ import 'rxjs/add/operator/toPromise';
         DialogModule,
         CalendarModule,
         TabMenuModule,
-        PasswordModule
+        PasswordModule,
+        GrowlModule,
+        PanelModule
     ],
     bootstrap: [AppComponent],
     providers: [AuthService, CustomerService]
