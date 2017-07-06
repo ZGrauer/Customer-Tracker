@@ -8,7 +8,7 @@ var schema = new Schema({
         required: true,
         trim: true
     },
-    firstName: {
+    lastName: {
         type: String,
         required: true,
         trim: true
@@ -22,10 +22,14 @@ var schema = new Schema({
         required: true,
         unique: true
     },
-    customers: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Customer'
-    }]
+    admin: {
+        type: Boolean,
+        default: false
+    },
+    deleted: {
+        type: Boolean,
+        default: false
+    }
 });
 
 schema.plugin(mongooseUniqueValidator);

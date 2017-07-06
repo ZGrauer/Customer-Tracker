@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from "@angular/core";
+import { Component, ViewEncapsulation, OnInit } from "@angular/core";
 
 import { Customer } from "./customer.model";
 import { CustomerService } from './customer.service';
@@ -9,8 +9,7 @@ import '../../../public/stylesheets/font-awesome-4.7.0/css/font-awesome.min.css'
 @Component({
     selector: 'app-customer',
     templateUrl: './customer.component.html',
-    encapsulation: ViewEncapsulation.None,
-    providers: [CustomerService]
+    encapsulation: ViewEncapsulation.None
 })
 
 export class CustomerComponent implements OnInit {
@@ -20,7 +19,7 @@ export class CustomerComponent implements OnInit {
     customer: Customer;
     customers: Customer[] = [];
 
-    constructor(private customerService: CustomerService) {}
+    constructor(private customerService: CustomerService) { }
 
     ngOnInit() {
         this.customers = this.customerService.getCustomers();
@@ -33,9 +32,13 @@ export class CustomerComponent implements OnInit {
     }
 
     save() {
-        if(this.newCustomer)
+        if (this.newCustomer)
             //this.customers.push(this.customer);
-            this.customerService.addCustomer(this.customer);
+            this.customerService.addCustomer(this.customer)
+                .subscribe(
+                data => console.log(data),
+                error => console.log(error)
+                );
         else
             this.customers[this.findSelectedCustomerIndex()] = this.customer;
 
@@ -58,7 +61,7 @@ export class CustomerComponent implements OnInit {
 
     cloneCustomer(c: Customer): Customer {
         let customer = new Customer(0, '', '', '', new Date(), new Date(), '');
-        for(let prop in c) {
+        for (let prop in c) {
             customer[prop] = c[prop];
         }
         return customer;
@@ -67,4 +70,5 @@ export class CustomerComponent implements OnInit {
     findSelectedCustomerIndex(): number {
         return this.customers.indexOf(this.selectedCustomer);
 
+    }
 }

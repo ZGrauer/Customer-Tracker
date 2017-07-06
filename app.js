@@ -7,9 +7,30 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
 var appRoutes = require('./routes/app');
+var customerRoutes = require('./routes/customer');
+var userRoutes = require('./routes/user');
 
 var app = express();
-mongoose.connect('localhost:27017/customer-tracker'); // Config with port and database name from MongoDB
+// Build the connection string
+var dbURI = 'mongodb://localhost:27017/customer-tracker';
+mongoose.connect(dbURI); // Config with port and database name from MongoDB
+
+// CONNECTION EVENTS
+// When successfully connected
+mongoose.connection.on('connected', function() {
+    console.log('Mongoose default connection open to ' + dbURI);
+});
+
+// If the connection throws an error
+mongoose.connection.on('error', function(err) {
+    console.log('Mongoose default connection error: ' + err);
+});
+
+// When the connection is disconnected
+mongoose.connection.on('disconnected', function() {
+    console.log('Mongoose default connection disconnected');
+});
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -32,6 +53,9 @@ app.use(function(req, res, next) {
     next();
 });
 
+
+app.use('/user', userRoutes);
+app.use('/customer', customerRoutes);
 app.use('/', appRoutes);
 
 // catch 404 and forward to error handler

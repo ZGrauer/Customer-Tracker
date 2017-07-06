@@ -6,16 +6,23 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppComponent } from './app.component';
 import { CustomerComponent } from './customers/customer.component';
+import { CustomerService } from './customers/customer.service';
 import { AuthenticationComponent } from './auth/authentication.component';
+import { AuthService } from './auth/auth.service';
+import { SignupComponent } from './auth/signup.component';
+import { SigninComponent } from './auth/signin.component';
+import { LogoutComponent } from './auth/logout.component';
 import { HeaderComponent } from './header.component';
 import { routing } from './app.routing';
 import {
     InputTextModule,
     DataTableModule,
     ButtonModule,
+    ToggleButtonModule,
     DialogModule,
     CalendarModule,
-    TabMenuModule
+    TabMenuModule,
+    PasswordModule
  } from 'primeng/primeng';
 
 import 'rxjs/add/operator/toPromise';
@@ -25,7 +32,10 @@ import 'rxjs/add/operator/toPromise';
         AppComponent,
         CustomerComponent,
         AuthenticationComponent,
-        HeaderComponent
+        HeaderComponent,
+        SignupComponent,
+        SigninComponent,
+        LogoutComponent
     ],
     imports: [
         BrowserModule,
@@ -36,11 +46,14 @@ import 'rxjs/add/operator/toPromise';
         InputTextModule,
         DataTableModule,
         ButtonModule,
+        ToggleButtonModule,
         DialogModule,
         CalendarModule,
-        TabMenuModule
+        TabMenuModule,
+        PasswordModule
     ],
-    bootstrap: [AppComponent]
+    bootstrap: [AppComponent],
+    providers: [AuthService, CustomerService]
 })
 export class AppModule {
 

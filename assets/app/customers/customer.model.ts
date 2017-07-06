@@ -5,6 +5,7 @@ export class Customer {
                 public user: String,
                 public initialDt: Date,
                 public updateDt: Date,
-                public updateUser: String
+                public updateUser: String,
+                public deleted?: Boolean
             ) {}
 }
