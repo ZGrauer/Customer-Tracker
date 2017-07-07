@@ -38,16 +38,24 @@ router.use('/', function(req, res, next) {
 
 router.post('/', function(req, res, next) {
     var decoded = jwt.decode(req.query.token);
-    console.log('Decoded JWT: ');
-    console.log(decoded);
-    console.log('Request Body: ');
-    console.log(req.body);
+    //console.log('Decoded JWT: ');
+    //console.log(decoded);
+    //console.log('Request Body: ');
+    //console.log(req.body);
 
     User.findById(decoded.user._id, function(err, user) {
         if (err) {
             return res.status(500).json({
                 title: 'An error occurred',
                 error: err
+            });
+        }
+        if (!user.admin || user.deleted) {
+            return res.status(401).json({
+                title: 'Not Authorized',
+                error: {
+                    message: 'User not authorized'
+                }
             });
         }
         var customer = new Customer({
@@ -92,7 +100,7 @@ router.patch('/:id', function(req, res, next) {
                 }
             });
         }
-        if (customer.user != decoded.user._id) {
+        if ((customer.user != decoded.user._id) && !decoded.admin) {
             return res.status(500).json({
                 title: 'Not Authorized',
                 error: {
@@ -141,7 +149,7 @@ router.delete('/:id', function(req, res, next) {
                 }
             });
         }
-        if (customer.user != decoded.user._id) {
+        if (!decoded.admin) {
             return res.status(500).json({
                 title: 'Not Authorized',
                 error: {

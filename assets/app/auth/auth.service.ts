@@ -38,7 +38,7 @@ export class AuthService {
         return this.users;
     }
 
-    getUserId():String {
+    getUserId(): String {
         return localStorage.getItem('userId');
     }
 
@@ -46,10 +46,22 @@ export class AuthService {
         this.users.splice(this.users.indexOf(user), 1);
     }
 
-    signin(email: String, password:String) {
-        const body = JSON.stringify({email: email, password: password});
-        const headers = new Headers({'Content-Type': 'application/json'});
-        return this.http.post('user/signin', body, {headers: headers})
+    updatePassword(oldPassword: String, newPassword: String) {
+        const body = JSON.stringify({
+            _userId: localStorage.getItem('userId'),
+            oldPassword: oldPassword,
+            newPassword: newPassword
+        });
+        const headers = new Headers({ 'Content-Type': 'application/json' });
+        return this.http.patch('user/changePassword', body, { headers: headers })
+            .map((response: Response) => response.json())
+            .catch((error: Response) => Observable.throw(error.json()));
+    }
+
+    signin(email: String, password: String) {
+        const body = JSON.stringify({ email: email, password: password });
+        const headers = new Headers({ 'Content-Type': 'application/json' });
+        return this.http.post('user/signin', body, { headers: headers })
             .map((response: Response) => response.json())
             .catch((error: Response) => Observable.throw(error.json()));
     }
@@ -58,15 +70,15 @@ export class AuthService {
         localStorage.clear();
     }
 
-    isLoggedIn():Boolean {
+    isLoggedIn(): Boolean {
         return localStorage.getItem('token') !== null;
     }
 
-    isAdmin():Boolean {
+    isAdmin(): Boolean {
         return localStorage.getItem('admin');
     }
 
-    isDeleted():Boolean {
+    isDeleted(): Boolean {
         return localStorage.getItem('deleted');
     }
 

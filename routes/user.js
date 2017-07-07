@@ -72,4 +72,46 @@ router.post('/signin', function(req, res, next) {
     });
 });
 
+
+router.patch('/changePassword', function(req, res, next) {
+    User.findById(req.body._userId, function(err, user) {
+        if (err) {
+            return res.status(500).json({
+                title: 'An error occurred',
+                error: err
+            });
+        }
+        if (!user) {
+            return res.status(500).json({
+                title: 'No User Found',
+                error: {
+                    message: 'User not found'
+                }
+            });
+        }
+        if (!bcrypt.compareSync(req.body.oldPassword, user.password)) {
+            return res.status(401).json({
+                title: 'Update failed',
+                error: {
+                    message: 'Invalid password'
+                }
+            });
+        }
+        user.password = bcrypt.hashSync(req.body.newPassword, 10);
+        user.save(function(err, result) {
+            if (err) {
+                return res.status(500).json({
+                    title: 'An error occurred',
+                    error: err
+                });
+            }
+            res.status(200).json({
+                message: 'Success',
+                obj: result
+            });
+        });
+
+    });
+});
+
 module.exports = router;

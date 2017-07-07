@@ -12,6 +12,7 @@ import { AuthService } from './auth/auth.service';
 import { SignupComponent } from './auth/signup.component';
 import { SigninComponent } from './auth/signin.component';
 import { LogoutComponent } from './auth/logout.component';
+import { ChangePasswordComponent } from './auth/changePassword.component';
 import { HeaderComponent } from './header.component';
 import { routing } from './app.routing';
 import {
@@ -38,7 +39,8 @@ import 'rxjs/add/operator/toPromise';
         HeaderComponent,
         SignupComponent,
         SigninComponent,
-        LogoutComponent
+        LogoutComponent,
+        ChangePasswordComponent
     ],
     imports: [
         BrowserModule,
