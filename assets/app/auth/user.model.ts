@@ -4,5 +4,6 @@ export class User {
                 public email: String,
                 public password: String,
                 public admin?: Boolean,
-                public deleted?: Boolean) {}
+                public deleted?: Boolean
+            ) {}
 }

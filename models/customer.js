@@ -22,6 +22,10 @@ var schema = new Schema({
         required: true,
         default: 'Engaged ESSS'
     },
+    note: {
+        type: String,
+        default: ''
+    },
     user: {
         type: Schema.Types.ObjectId,
         ref: 'User'
@@ -37,10 +41,6 @@ var schema = new Schema({
     updateUser: {
         type: Schema.Types.ObjectId,
         ref: 'User'
-    },
-    deleted: {
-        type: Boolean,
-        default: false
     }
 });
 

@@ -24,7 +24,7 @@ export class SigninComponent implements OnInit {
     ngOnInit() {
         this.loginform = this.fb.group({
             'email': new FormControl('', Validators.compose([Validators.required, Validators.email])),
-            'password': new FormControl('', Validators.compose([Validators.required, Validators.minLength(6)])),
+            'password': new FormControl('', Validators.required),
         });
     }
 
@@ -34,6 +34,8 @@ export class SigninComponent implements OnInit {
                 data => {
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('userId', data.userId);
+                    localStorage.setItem('admin', data.admin);
+                    localStorage.setItem('deleted', data.deleted);
                     this.router.navigateByUrl('/');
                 },
                 error => console.error(error)

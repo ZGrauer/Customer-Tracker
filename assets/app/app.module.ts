@@ -16,6 +16,7 @@ import { HeaderComponent } from './header.component';
 import { routing } from './app.routing';
 import {
     InputTextModule,
+    InputTextareaModule,
     DataTableModule,
     ButtonModule,
     ToggleButtonModule,
@@ -47,6 +48,7 @@ import 'rxjs/add/operator/toPromise';
         HttpModule,
         routing,
         InputTextModule,
+        InputTextareaModule,
         DataTableModule,
         ButtonModule,
         ToggleButtonModule,

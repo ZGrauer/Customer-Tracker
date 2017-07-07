@@ -4,22 +4,21 @@
     <p-panel header="Login">
         <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
             <div class="ui-grid-row">
-                <div class="ui-grid-col-3"><label for="email">Email</label></div>
+                <div class="ui-grid-col-2"><label for="email">Email</label></div>
                 <div class="ui-grid-col-6"><input pInputText type="email" id="email" formControlName="email" [(ngModel)]="email" placeholder="Required" /></div>
-                <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
+                <div class="ui-grid-col-4">
                     <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!loginform.controls['email'].valid&&loginform.controls['email'].dirty">
                         <i class="fa fa-close"></i> Valid email is required
                     </div>
                 </div>
             </div>
             <div class="ui-grid-row">
-                <div class="ui-grid-col-3"><label for="password">Password</label></div>
+                <div class="ui-grid-col-2"><label for="password">Password</label></div>
                 <div class="ui-grid-col-6"><input type="password" pPassword id="password" formControlName="password" [(ngModel)]="password" placeholder="Required - Min 6" /></div>
-                <div class="ui-grid-col-3">
+                <div class="ui-grid-col-4">
                     <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!loginform.controls['password'].valid&&loginform.controls['password'].dirty">
                         <i class="fa fa-close"></i>
                         <span *ngIf="loginform.controls['password'].errors['required']">Password is required</span>
-                        <span *ngIf="loginform.controls['password'].errors['minlength']">Must be longer than 6 characters</span>
                     </div>
                 </div>
             </div>

@@ -38,6 +38,10 @@ export class AuthService {
         return this.users;
     }
 
+    getUserId():String {
+        return localStorage.getItem('userId');
+    }
+
     deleteUser(user: User) {
         this.users.splice(this.users.indexOf(user), 1);
     }
@@ -54,7 +58,16 @@ export class AuthService {
         localStorage.clear();
     }
 
-    isLoggedIn() {
+    isLoggedIn():Boolean {
         return localStorage.getItem('token') !== null;
     }
+
+    isAdmin():Boolean {
+        return localStorage.getItem('admin');
+    }
+
+    isDeleted():Boolean {
+        return localStorage.getItem('deleted');
+    }
+
 }

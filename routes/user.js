@@ -56,6 +56,7 @@ router.post('/signin', function(req, res, next) {
                 }
             });
         }
+        // UPDATE 'secret' FOR PRODUCTION
         var token = jwt.sign({
             user: user
         }, 'secret', {
@@ -64,7 +65,9 @@ router.post('/signin', function(req, res, next) {
         res.status(200).json({
             message: 'Successfully logged in',
             token: token,
-            userId: user._id
+            userId: user._id,
+            admin: user.admin,
+            deleted: user.deleted
         });
     });
 });
