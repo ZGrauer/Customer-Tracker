@@ -35,7 +35,7 @@ export class SignupComponent implements OnInit {
         });
     }
 
-    save(value: string) {
+    onSubmit(value: string) {
         if (this.newUser) {
             //this.customers.push(this.customer);
             this.authService.addUser(this.user)
