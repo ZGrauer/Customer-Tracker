@@ -35,7 +35,28 @@ export class AuthService {
     }
 
     getUsers() {
-        return this.users;
+        return this.http.get('user')
+            .map((response: Response) => {
+                const users = response.json().obj;
+                let transformedUsers: User[] = [];
+                for (let user of users) {
+                    console.log('Received: ');
+                    console.log(user);
+                    transformedUsers.push(new User(
+                        user.firstName,
+                        user.lastName,
+                        '',
+                        user.email,
+                        user.admin,
+                        user.deleted,
+                        user._id
+                    ));
+                }
+                this.users = transformedUsers;
+                console.log(transformedUsers);
+                return transformedUsers;
+            })
+            .catch((error: Response) => Observable.throw('Error in Auth Service! ' + error.text));
     }
 
     getUserId(): String {

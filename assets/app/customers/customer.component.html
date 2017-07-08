@@ -36,19 +36,19 @@
           </div>
           <div class="ui-grid-row">
               <div class="ui-grid-col-4"><label for="user">ESSS IPM</label></div>
-              <div class="ui-grid-col-8"><input pInputText id="user" [(ngModel)]="customer.user" /></div>
+              <p-dropdown [options]="userSelection" [(ngModel)]="customer._userId" placeholder="Select an IPM" [style]="{'width':'175px'}" [disabled]="!isAdmin()"></p-dropdown>
           </div>
           <div class="ui-grid-row">
               <div class="ui-grid-col-4"><label for="initialDt">Initial Contact Date</label></div>
-              <div class="ui-grid-col-8"><p-calendar id="initialDt" [(ngModel)]="customer.initialDt" [inline]="true"></p-calendar></div>
+              <div class="ui-grid-col-8"><p-calendar id="initialDt" [(ngModel)]="customer.initialDt" [inline]="true" [disabled]="!newCustomer"></p-calendar></div>
           </div>
           <div class="ui-grid-row">
               <div class="ui-grid-col-4"><label for="updateDt">Last Update Date</label></div>
-              <div class="ui-grid-col-8"><p-calendar id="updateDt" [(ngModel)]="customer.updateDt" [inline]="true"></p-calendar></div>
+              <div class="ui-grid-col-8"><p-calendar id="updateDt" [(ngModel)]="customer.updateDt"  [disabled]="true"></p-calendar></div>
           </div>
           <div class="ui-grid-row">
               <div class="ui-grid-col-4"><label for="updateUser">Last Update By</label></div>
-              <div class="ui-grid-col-8"><input pInputText id="updateUser" [(ngModel)]="customer.updateUser" /></div>
+              <div class="ui-grid-col-8"><p-dropdown [options]="userSelection" [(ngModel)]="currentUserId" [style]="{'width':'175px'}" [disabled]="true"></p-dropdown></div>
           </div>
       </div>
       <p-footer>

@@ -1,11 +1,14 @@
 import { Component, ViewEncapsulation, OnInit } from "@angular/core";
 
 import { Customer } from "./customer.model";
+import { User } from "../auth/user.model";
 import { CustomerService } from './customer.service';
 import { AuthService } from '../auth/auth.service';
 import '../../../node_modules/primeng/resources/themes/omega/theme.css';
 import '../../../node_modules/primeng/resources/primeng.min.css';
 import '../../../public/stylesheets/font-awesome-4.7.0/css/font-awesome.min.css';
+
+import {DropdownModule} from 'primeng/primeng';
 
 @Component({
     selector: 'app-customer',
@@ -19,8 +22,11 @@ export class CustomerComponent implements OnInit {
     newCustomer: boolean;
     customer: Customer;
     customers: Customer[] = [];
+    users: User[] = [];
+    userSelection: SelectItem[] = [];
+    currentUserId: String;
 
-    constructor(private customerService: CustomerService, authService:AuthService) { }
+    constructor(private customerService: CustomerService, private authService:AuthService) { }
 
     ngOnInit() {
         //this.customers = this.customerService.getCustomers();
@@ -30,6 +36,18 @@ export class CustomerComponent implements OnInit {
                     this.customers = customers;
                 }
             );
+
+        this.authService.getUsers()
+            .subscribe(
+                (users: User[]) => {
+                    this.users = users;
+                    this.userSelection.push({label:'Select IPM', value:null});
+                    this.users.forEach(u => {
+                        this.userSelection.push({label: u.firstName + ' ' + u.lastName, value:u._id});
+                    });
+                }
+            );
+        this.currentUserId = this.authService.getUserId();
     }
 
     showDialogToAdd() {
@@ -91,14 +109,14 @@ export class CustomerComponent implements OnInit {
     }
 
     belongsToUser() {
-        return (localStorage.getItem('userId') == this.customer._userId) || localStorage.getItem('admin');;
+        return (this.authService.getUserId() == this.customer._userId) || this.authService.isAdmin();
     }
 
     isLoggedIn() {
-        return localStorage.getItem('token') !== null && !localStorage.getItem('deleted');
+        return localStorage.getItem('token') !== null && !this.authService.isDeleted();
     }
 
     isAdmin() {
-        return localStorage.getItem('admin');
+        return this.authService.isAdmin();
     }
 }

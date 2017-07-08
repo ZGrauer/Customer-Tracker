@@ -5,5 +5,6 @@ export class User {
                 public password: String,
                 public admin?: Boolean,
                 public deleted?: Boolean
+                public _id?: String
             ) {}
 }
