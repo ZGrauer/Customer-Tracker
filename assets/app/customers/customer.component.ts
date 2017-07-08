@@ -32,13 +32,7 @@ export class CustomerComponent implements OnInit {
 
     ngOnInit() {
         //this.customers = this.customerService.getCustomers();
-        this.customerService.getCustomers()
-            .subscribe(
-            (customers: Customer[]) => {
-                //console.log(customers);
-                this.customers = customers;
-            }
-            );
+        this.getCustomers();
 
         this.authService.getUsers()
             .subscribe(
@@ -71,9 +65,19 @@ export class CustomerComponent implements OnInit {
         }
     }
 
+    getCustomers() {
+        this.customerService.getCustomers()
+            .subscribe(
+                (customers: Customer[]) => {
+                    //console.log(customers);
+                    this.customers = customers;
+                }
+            );
+    }
+
     save(value: String) {
+        this.customer._updateUserId = this.authService.getUserId();
         if (this.newCustomer) {
-            this.customer._updateUserId = this.authService.getUserId();
             this.customerService.addCustomer(this.customer)
                 .subscribe(
                 data => console.log(data),

@@ -11,7 +11,7 @@ router.get('/', function(req, res, next) {
         .exec(function(err, users) {
             if (err) {
                 return res.status(500).json({
-                    title: 'An error occurred',
+                    title: 'Error',
                     error: err
                 });
             }
@@ -35,12 +35,12 @@ router.post('/', function(req, res, next) {
     user.save(function(err, result) {
         if (err) {
             return res.status(500).json({
-                title: 'An error occurred',
+                title: 'Error',
                 error: err
             });
         }
         res.status(201).json({
-            message: 'User Created',
+            message: 'Success',
             obj: result
         });
     });
@@ -53,7 +53,7 @@ router.post('/signin', function(req, res, next) {
     }, function(err, user) {
         if (err) {
             return res.status(500).json({
-                title: 'An error occurred',
+                title: 'Error',
                 error: err
             });
         }
@@ -80,7 +80,7 @@ router.post('/signin', function(req, res, next) {
             expiresIn: 7200
         });
         res.status(200).json({
-            message: 'Successfully logged in',
+            message: 'Success',
             token: token,
             userId: user._id,
             admin: user.admin,
@@ -94,7 +94,7 @@ router.patch('/changePassword', function(req, res, next) {
     User.findById(req.body._userId, function(err, user) {
         if (err) {
             return res.status(500).json({
-                title: 'An error occurred',
+                title: 'Error',
                 error: err
             });
         }
@@ -118,7 +118,7 @@ router.patch('/changePassword', function(req, res, next) {
         user.save(function(err, result) {
             if (err) {
                 return res.status(500).json({
-                    title: 'An error occurred',
+                    title: 'Error',
                     error: err
                 });
             }

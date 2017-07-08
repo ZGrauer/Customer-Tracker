@@ -13,7 +13,7 @@ router.get('/', function(req, res, next) {
         .exec(function(err, customers) {
             if (err) {
                 return res.status(500).json({
-                    title: 'An error occurred',
+                    title: 'Error',
                     error: err
                 });
             }
@@ -46,7 +46,7 @@ router.post('/', function(req, res, next) {
     User.findById(decoded.user._id, function(err, user) {
         if (err) {
             return res.status(500).json({
-                title: 'An error occurred',
+                title: 'Error',
                 error: err
             });
         }
@@ -62,15 +62,15 @@ router.post('/', function(req, res, next) {
         User.findById(req.body._userId, function(err, ipm) {
             if (err) {
                 return res.status(500).json({
-                    title: 'An error occurred',
+                    title: 'Error',
                     error: err
                 });
             }
 
-            console.log('Current User: ');
-            console.log(user);
-            console.log('IPM: ');
-            console.log(ipm);
+            //console.log('Current User: ');
+            //console.log(user);
+            //console.log('IPM: ');
+            //console.log(ipm);
             var customer = new Customer({
                 h1: req.body.h1,
                 name: req.body.name,
@@ -81,17 +81,17 @@ router.post('/', function(req, res, next) {
                 updateDt: req.body.updateDt,
                 updateUser: user
             });
-            console.log('Customer: ');
-            console.log(customer);
+            //console.log('Customer: ');
+            //console.log(customer);
             customer.save(function(err, result) {
                 if (err) {
                     return res.status(500).json({
-                        title: 'An error occurred',
+                        title: 'Error',
                         error: err
                     });
                 }
                 res.status(201).json({
-                    message: 'Saved Customer',
+                    message: 'Success',
                     obj: result
                 });
             });
@@ -106,7 +106,7 @@ router.patch('/:id', function(req, res, next) {
     Customer.findById(req.params.id, function(err, customer) {
         if (err) {
             return res.status(500).json({
-                title: 'An error occurred',
+                title: 'Error',
                 error: err
             });
         }
@@ -139,7 +139,7 @@ router.patch('/:id', function(req, res, next) {
         customer.save(function(err, result) {
             if (err) {
                 return res.status(500).json({
-                    title: 'An error occurred',
+                    title: 'Error',
                     error: err
                 });
             }
@@ -157,7 +157,7 @@ router.delete('/:_id', function(req, res, next) {
     Customer.findById(req.params._id, function(err, customer) {
         if (err) {
             return res.status(500).json({
-                title: 'An error occurred',
+                title: 'Error',
                 error: err
             });
         }
@@ -180,12 +180,12 @@ router.delete('/:_id', function(req, res, next) {
         customer.remove(function(err, result) {
             if (err) {
                 return res.status(500).json({
-                    title: 'An error occurred',
+                    title: 'Error',
                     error: err
                 });
             }
             res.status(200).json({
-                message: 'Deleted customer',
+                message: 'Success',
                 obj: result
             });
         });

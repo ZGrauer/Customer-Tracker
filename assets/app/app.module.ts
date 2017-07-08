@@ -15,6 +15,8 @@ import { LogoutComponent } from './auth/logout.component';
 import { ChangePasswordComponent } from './auth/changePassword.component';
 import { HeaderComponent } from './header.component';
 import { routing } from './app.routing';
+import { ErrorService } from './error/error.service';
+import { ErrorComponent } from './error/error.component';
 import {
     InputTextModule,
     InputTextareaModule,
@@ -28,7 +30,7 @@ import {
     PasswordModule,
     GrowlModule,
     PanelModule
- } from 'primeng/primeng';
+} from 'primeng/primeng';
 
 import 'rxjs/add/operator/toPromise';
 
@@ -41,7 +43,8 @@ import 'rxjs/add/operator/toPromise';
         SignupComponent,
         SigninComponent,
         LogoutComponent,
-        ChangePasswordComponent
+        ChangePasswordComponent,
+        ErrorComponent
     ],
     imports: [
         BrowserModule,
@@ -64,7 +67,11 @@ import 'rxjs/add/operator/toPromise';
         PanelModule
     ],
     bootstrap: [AppComponent],
-    providers: [AuthService, CustomerService]
+    providers: [
+        AuthService,
+        CustomerService,
+        ErrorService
+    ]
 })
 export class AppModule {
 

@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import {Validators, FormControl, FormGroup, FormBuilder} from '@angular/forms';
 import { Router } from "@angular/router";
-
+import { Observable } from 'rxjs/Rx';
 import { User } from "./user.model";
 import { AuthService } from "./auth.service";
+import { ErrorService } from '../error/error.service';
 import '../../../node_modules/primeng/resources/themes/omega/theme.css';
 import '../../../node_modules/primeng/resources/primeng.min.css';
 import '../../../public/stylesheets/font-awesome-4.7.0/css/font-awesome.min.css';
@@ -19,7 +20,7 @@ export class SigninComponent implements OnInit {
     displayDialog: boolean = false;
     loginform: FormGroup;
 
-    constructor(private authService: AuthService, private router: Router, private fb: FormBuilder) {}
+    constructor(private authService: AuthService, private router: Router, private fb: FormBuilder, private errorService: ErrorService) {}
 
     ngOnInit() {
         this.loginform = this.fb.group({
@@ -38,7 +39,11 @@ export class SigninComponent implements OnInit {
                     localStorage.setItem('deleted', data.deleted);
                     this.router.navigateByUrl('/');
                 },
-                error => console.error(error)
+                error => {
+                    console.error(error);
+                    this.errorService.handleError(error);
+                    return Observable.throw(error);
+                }
             );
     }
 
