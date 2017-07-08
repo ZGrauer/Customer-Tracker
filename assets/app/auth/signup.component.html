@@ -8,7 +8,7 @@
                 <div class="ui-grid-col-6"><input pInputText id="firstName" formControlName="firstName" [(ngModel)]="user.firstName" placeholder="Required" /></div>
                 <div class="ui-grid-col-4">
                     <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!userform.controls['firstName'].valid&&userform.controls['firstName'].dirty">
-                        <i class="fa fa-close"></i> Firstname is required
+                        <i class="fa fa-times-circle"></i> First name is required
                     </div>
                 </div>
             </div>
@@ -17,7 +17,7 @@
                 <div class="ui-grid-col-6"><input pInputText id="lastName" formControlName="lastName" [(ngModel)]="user.lastName" placeholder="Required" /></div>
                 <div class="ui-grid-col-4">
                     <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!userform.controls['lastName'].valid&&userform.controls['lastName'].dirty">
-                        <i class="fa fa-close"></i> Lastname is required
+                        <i class="fa fa-times-circle"></i> Last name is required
                     </div>
                 </div>
             </div>
@@ -26,7 +26,7 @@
                 <div class="ui-grid-col-6"><input pInputText type="email" id="email" formControlName="email" [(ngModel)]="user.email" placeholder="Required" /></div>
                 <div class="ui-grid-col-4">
                     <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!userform.controls['email'].valid&&userform.controls['email'].dirty">
-                        <i class="fa fa-close"></i> Valid email is required
+                        <i class="fa fa-times-circle"></i> Valid email is required
                     </div>
                 </div>
             </div>
@@ -35,7 +35,7 @@
                 <div class="ui-grid-col-6"><input type="password" pPassword id="password" formControlName="password" [(ngModel)]="user.password" placeholder="Required - Min 6" /></div>
                 <div class="ui-grid-col-4">
                     <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!userform.controls['password'].valid&&userform.controls['password'].dirty">
-                        <i class="fa fa-close"></i>
+                        <i class="fa fa-times-circle"></i>
                         <span *ngIf="userform.controls['password'].errors['required']">Password is required</span>
                         <span *ngIf="userform.controls['password'].errors['minlength']">Must be longer than 6 characters</span>
                     </div>
@@ -50,8 +50,8 @@
             </div>
         </div>
         <div class="ui-grid-col-3">
-            <button type="button" pButton icon="fa-close" (click)="delete()" label="Delete" *ngIf="!newUser"></button>
+            <button type="button" pButton icon="fa-trash-o" (click)="delete()" label="Delete" *ngIf="!newUser"></button>
         </div>
-        <button type="button" pButton icon="fa-check" type="submit" label="Save" [disabled]="!userform.valid"></button>
+        <button type="button" pButton icon="fa-save" type="submit" label="Save" [disabled]="!userform.valid"></button>
     </p-panel>
 </form>

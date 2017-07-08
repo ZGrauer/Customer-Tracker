@@ -1,5 +1,5 @@
 import { Component, ViewEncapsulation, OnInit } from "@angular/core";
-
+import { Validators, FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { Customer } from "./customer.model";
 import { User } from "../auth/user.model";
 import { CustomerService } from './customer.service';
@@ -26,7 +26,7 @@ export class CustomerComponent implements OnInit {
     userSelection: SelectItem[] = [];
     currentUserId: String;
 
-    constructor(private customerService: CustomerService, private authService:AuthService) { }
+    constructor(private customerService: CustomerService, private authService:AuthService, private fb: FormBuilder) { }
 
     ngOnInit() {
         //this.customers = this.customerService.getCustomers();
@@ -48,15 +48,25 @@ export class CustomerComponent implements OnInit {
                 }
             );
         this.currentUserId = this.authService.getUserId();
+        this.customerform = this.fb.group({
+            'h1': new FormControl('', Validators.compose([Validators.required, Validators.minLength(9), Validators.maxLength(9)])),
+            'name': new FormControl('', Validators.required),
+            'status': new FormControl('', Validators.required),
+            'note': new FormControl(''),
+            'ipm': new FormControl('', Validators.required),
+            'initialDt': new FormControl('', Validators.required),
+            'updateDt': new FormControl('', Validators.required),
+            'updateUser': new FormControl({disabled: true}, Validators.required)
+        });
     }
 
     showDialogToAdd() {
         this.newCustomer = true;
-        this.customer = new Customer(0, '', '', '', '', new Date(), new Date(), '');
+        this.customer = new Customer(null, '', '', '', '', new Date(), new Date(), '');
         this.displayDialog = true;
     }
 
-    save() {
+    save(value: String) {
         if (this.newCustomer) {
             //this.customers.push(this.customer);
             this.customerService.addCustomer(this.customer)

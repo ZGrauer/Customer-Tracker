@@ -21,8 +21,8 @@ export class ChangePasswordComponent implements OnInit {
 
     ngOnInit() {
         this.passwordform = this.fb.group({
-            'oldPassword': new FormControl('', Validators.required),
-            'newPassword': new FormControl('', Validators.required)
+            'oldPassword': new FormControl('', Validators.compose([Validators.required, Validators.minLength(6)])),
+            'newPassword': new FormControl('', Validators.compose([Validators.required, Validators.minLength(6)]))
         });
     }
 

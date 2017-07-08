@@ -8,7 +8,7 @@
                 <div class="ui-grid-col-6"><input pInputText type="email" id="email" formControlName="email" [(ngModel)]="email" placeholder="Required" /></div>
                 <div class="ui-grid-col-4">
                     <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!loginform.controls['email'].valid&&loginform.controls['email'].dirty">
-                        <i class="fa fa-close"></i> Valid email is required
+                        <i class="fa fa-times-circle"></i> Valid email is required
                     </div>
                 </div>
             </div>
@@ -17,7 +17,7 @@
                 <div class="ui-grid-col-6"><input type="password" pPassword id="password" formControlName="password" [(ngModel)]="password" placeholder="Required - Min 6" /></div>
                 <div class="ui-grid-col-4">
                     <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!loginform.controls['password'].valid&&loginform.controls['password'].dirty">
-                        <i class="fa fa-close"></i>
+                        <i class="fa fa-times-circle"></i>
                         <span *ngIf="loginform.controls['password'].errors['required']">Password is required</span>
                     </div>
                 </div>
