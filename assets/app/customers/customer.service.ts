@@ -13,14 +13,13 @@ export class CustomerService {
     constructor(private http: Http) { }
 
     addCustomer(customer: Customer) {
-        this.customers.push(customer);
         const body = JSON.stringify(customer);
         const headers = new Headers({ 'Content-Type': 'application/json' });
         const token = localStorage.getItem('token')
             ? '?token=' + localStorage.getItem('token')
             : '';
-        console.log(body);
-        console.log(token);
+        //console.log(body);
+        //console.log(token);
         return this.http.post('customer' + token, body, { headers: headers })
             .map((response: Response) => {
                 const result = response.json();
@@ -30,12 +29,13 @@ export class CustomerService {
                     result.obj.status,
                     result.obj.note,
                     result.obj.user.firstName + ' ' + result.obj.user.lastName,
-                    result.obj.initialDt,
-                    result.obj.updateDt,
+                    moment(result.obj.initialDt).format('MM/DD/YYYY'),
+                    moment(result.obj.updateDt).format('MM/DD/YYYY'),
                     result.obj.user.firstName + ' ' + result.obj.user.lastName,
                     result.obj._id,
                     result.obj.user._id
                 );
+                this.customers.push(customer);
                 return customer;
             })
             .catch((error: Response) => Observable.throw('Error in Customer Service! ' + error.text));
@@ -48,8 +48,8 @@ export class CustomerService {
                 const customers = response.json().obj;
                 let transformedCustomers: Customer[] = [];
                 for (let customer of customers) {
-                    console.log('Received: ');
-                    console.log(customer);
+                    //console.log('Received: ');
+                    //console.log(customer);
                     transformedCustomers.push(new Customer(
                         customer.h1,
                         customer.name,
@@ -58,9 +58,10 @@ export class CustomerService {
                         customer.user.firstName + ' ' + customer.user.lastName,
                         moment(customer.initialDt).format('MM/DD/YYYY'),
                         moment(customer.updateDt).format('MM/DD/YYYY'),
-                        customer.user.firstName + ' ' + customer.user.lastName,
+                        customer.updateUser.firstName + ' ' + customer.updateUser.lastName,
                         customer._id,
-                        customer.user._id
+                        customer.user._id,
+                        customer.updateUser._id
                     ));
                 }
                 this.customers = transformedCustomers;
@@ -75,6 +76,7 @@ export class CustomerService {
         const token = localStorage.getItem('token')
             ? '?token=' + localStorage.getItem('token')
             : '';
+        console.log(customer);
         return this.http.patch('customer/' + customer._id + token, body, { headers: headers })
             .map((response: Response) => response.json())
             .catch((error: Response) => Observable.throw('Error in Customer Service! ' + error.text));

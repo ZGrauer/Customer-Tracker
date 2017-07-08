@@ -40,8 +40,8 @@ export class AuthService {
                 const users = response.json().obj;
                 let transformedUsers: User[] = [];
                 for (let user of users) {
-                    console.log('Received: ');
-                    console.log(user);
+                    //console.log('Received User: ');
+                    //console.log(user);
                     transformedUsers.push(new User(
                         user.firstName,
                         user.lastName,
@@ -53,7 +53,7 @@ export class AuthService {
                     ));
                 }
                 this.users = transformedUsers;
-                console.log(transformedUsers);
+                //console.log(transformedUsers);
                 return transformedUsers;
             })
             .catch((error: Response) => Observable.throw('Error in Auth Service! ' + error.text));
@@ -91,16 +91,16 @@ export class AuthService {
         localStorage.clear();
     }
 
-    isLoggedIn(): Boolean {
+    isLoggedIn(): boolean {
         return localStorage.getItem('token') !== null;
     }
 
-    isAdmin(): Boolean {
-        return localStorage.getItem('admin');
+    isAdmin(): boolean {
+        return JSON.parse(localStorage.getItem('admin'));
     }
 
-    isDeleted(): Boolean {
-        return localStorage.getItem('deleted');
+    isDeleted(): boolean {
+        return JSON.parse(localStorage.getItem('deleted'));
     }
 
 }

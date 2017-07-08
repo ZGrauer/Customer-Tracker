@@ -1,14 +1,15 @@
 import { Component, ViewEncapsulation, OnInit } from "@angular/core";
 import { Validators, FormControl, FormGroup, FormBuilder } from '@angular/forms';
+
 import { Customer } from "./customer.model";
 import { User } from "../auth/user.model";
 import { CustomerService } from './customer.service';
 import { AuthService } from '../auth/auth.service';
+
 import '../../../node_modules/primeng/resources/themes/omega/theme.css';
 import '../../../node_modules/primeng/resources/primeng.min.css';
 import '../../../public/stylesheets/font-awesome-4.7.0/css/font-awesome.min.css';
-
-import {DropdownModule} from 'primeng/primeng';
+import {SelectItem} from 'primeng/primeng';
 
 @Component({
     selector: 'app-customer',
@@ -25,27 +26,29 @@ export class CustomerComponent implements OnInit {
     users: User[] = [];
     userSelection: SelectItem[] = [];
     currentUserId: String;
+    customerform: FormGroup;
 
-    constructor(private customerService: CustomerService, private authService:AuthService, private fb: FormBuilder) { }
+    constructor(private customerService: CustomerService, private authService: AuthService, private fb: FormBuilder) { }
 
     ngOnInit() {
         //this.customers = this.customerService.getCustomers();
         this.customerService.getCustomers()
             .subscribe(
-                (customers: Customer[]) => {
-                    this.customers = customers;
-                }
+            (customers: Customer[]) => {
+                //console.log(customers);
+                this.customers = customers;
+            }
             );
 
         this.authService.getUsers()
             .subscribe(
-                (users: User[]) => {
-                    this.users = users;
-                    this.userSelection.push({label:'Select IPM', value:null});
-                    this.users.forEach(u => {
-                        this.userSelection.push({label: u.firstName + ' ' + u.lastName, value:u._id});
-                    });
-                }
+            (users: User[]) => {
+                this.users = users;
+                this.userSelection.push({ label: 'Select IPM', value: null });
+                this.users.forEach(u => {
+                    this.userSelection.push({ label: u.firstName + ' ' + u.lastName, value: u._id });
+                });
+            }
             );
         this.currentUserId = this.authService.getUserId();
         this.customerform = this.fb.group({
@@ -54,31 +57,33 @@ export class CustomerComponent implements OnInit {
             'status': new FormControl('', Validators.required),
             'note': new FormControl(''),
             'ipm': new FormControl('', Validators.required),
-            'initialDt': new FormControl('', Validators.required),
-            'updateDt': new FormControl('', Validators.required),
-            'updateUser': new FormControl({disabled: true}, Validators.required)
+            'initialDt': new FormControl(''),
+            'updateDt': new FormControl(''),
+            'updateUser': new FormControl({ disabled: true })
         });
     }
 
     showDialogToAdd() {
-        this.newCustomer = true;
-        this.customer = new Customer(null, '', '', '', '', new Date(), new Date(), '');
-        this.displayDialog = true;
+        if (this.isAdmin()) {
+            this.newCustomer = true;
+            this.customer = new Customer(null, '', '', '', '', new Date(), new Date(), '');
+            this.displayDialog = true;
+        }
     }
 
     save(value: String) {
         if (this.newCustomer) {
-            //this.customers.push(this.customer);
+            this.customer._updateUserId = this.authService.getUserId();
             this.customerService.addCustomer(this.customer)
                 .subscribe(
-                    data => console.log(data),
-                    error => console.log(error)
+                data => console.log(data),
+                error => console.log(error)
                 );
         } else {
             this.customers[this.findSelectedCustomerIndex()] = this.customer;
-            this.customerService.updateCustomer(this.customers[this.findSelectedCustomerIndex()])
+            this.customerService.updateCustomer(this.customer)
                 .subscribe(
-                    result => console.log(result)
+                result => console.log(result)
                 );
         }
 
@@ -90,7 +95,7 @@ export class CustomerComponent implements OnInit {
         //this.customers.splice(this.findSelectedCustomerIndex(), 1);
         this.customerService.deleteCustomer(this.selectedCustomer)
             .subscribe(
-                result => console.log(result)
+            result => console.log(result)
             );
         this.customer = null;
         this.displayDialog = false;

@@ -9,7 +9,7 @@ var jwt = require('jsonwebtoken');
 
 router.get('/', function(req, res, next) {
     Customer.find()
-        .populate('user', 'firstName lastName')
+        .populate('user updateUser')
         .exec(function(err, customers) {
             if (err) {
                 return res.status(500).json({
@@ -58,40 +58,59 @@ router.post('/', function(req, res, next) {
                 }
             });
         }
-        var customer = new Customer({
-            h1: req.body.h1,
-            name: req.body.name,
-            status: req.body.status,
-            note: req.body.note,
-            user: user,
-            initialDt: req.body.initialDt,
-            updateDt: req.body.updateDt,
-            updateUser: user
-        });
-        console.log(customer);
-        customer.save(function(err, result) {
+
+        User.findById(req.body._userId, function(err, ipm) {
             if (err) {
                 return res.status(500).json({
                     title: 'An error occurred',
                     error: err
                 });
             }
-            res.status(201).json({
-                message: 'Saved Customer',
-                obj: result
+
+            console.log('Current User: ');
+            console.log(user);
+            console.log('IPM: ');
+            console.log(ipm);
+            var customer = new Customer({
+                h1: req.body.h1,
+                name: req.body.name,
+                status: req.body.status,
+                note: req.body.note,
+                user: ipm,
+                initialDt: req.body.initialDt,
+                updateDt: req.body.updateDt,
+                updateUser: user
             });
+            console.log('Customer: ');
+            console.log(customer);
+            customer.save(function(err, result) {
+                if (err) {
+                    return res.status(500).json({
+                        title: 'An error occurred',
+                        error: err
+                    });
+                }
+                res.status(201).json({
+                    message: 'Saved Customer',
+                    obj: result
+                });
+            });
+
         });
+
     });
 });
 
 router.patch('/:id', function(req, res, next) {
-    Customer.findById(req.params._id, function(err, customer) {
+    var decoded = jwt.decode(req.query.token);
+    Customer.findById(req.params.id, function(err, customer) {
         if (err) {
             return res.status(500).json({
                 title: 'An error occurred',
                 error: err
             });
         }
+        //console.log(customer);
         if (!customer) {
             return res.status(500).json({
                 title: 'No Customer Found',
@@ -100,7 +119,7 @@ router.patch('/:id', function(req, res, next) {
                 }
             });
         }
-        if ((customer.user != decoded.user._id) && !decoded.admin) {
+        if (customer.user != decoded.user._id && !decoded.user.admin) {
             return res.status(500).json({
                 title: 'Not Authorized',
                 error: {
@@ -112,10 +131,10 @@ router.patch('/:id', function(req, res, next) {
         customer.name = req.body.name;
         customer.status = req.body.status;
         customer.note = req.body.note;
-        customer.user = req.body.user;
+        customer.user = req.body._userId;
         customer.initialDt = req.body.initialDt;
         customer.updateDt = req.body.updateDt;
-        customer.updateUser = req.body.updateUser;
+        customer.updateUser = req.body._updateUserId;
         customer.deleted = req.body.deleted;
         customer.save(function(err, result) {
             if (err) {
@@ -133,7 +152,8 @@ router.patch('/:id', function(req, res, next) {
     });
 });
 
-router.delete('/:id', function(req, res, next) {
+router.delete('/:_id', function(req, res, next) {
+    var decoded = jwt.decode(req.query.token);
     Customer.findById(req.params._id, function(err, customer) {
         if (err) {
             return res.status(500).json({
@@ -149,7 +169,7 @@ router.delete('/:id', function(req, res, next) {
                 }
             });
         }
-        if (!decoded.admin) {
+        if (!decoded.user.admin) {
             return res.status(500).json({
                 title: 'Not Authorized',
                 error: {
