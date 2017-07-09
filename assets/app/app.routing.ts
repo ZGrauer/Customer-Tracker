@@ -1,8 +1,7 @@
 import { Routes, RouterModule } from '@angular/router';
-
+import { AUTH_ROUTES } from "./auth/auth.routing";
 import { CustomerComponent } from './customers/customer.component';
 import { AuthenticationComponent } from './auth/authentication.component';
-import { AUTH_ROUTES } from './auth/auth.routes';
 
 const APP_ROUTES: Routes = [
     { path: '', redirectTo: '/customers', pathMatch: 'full' },

@@ -5,8 +5,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppComponent } from './app.component';
-import { CustomerComponent } from './customers/customer.component';
-import { CustomerService } from './customers/customer.service';
+import { CustomerModule } from './customers/customer.module'
 import { AuthenticationComponent } from './auth/authentication.component';
 import { AuthService } from './auth/auth.service';
 import { SignupComponent } from './auth/signup.component';
@@ -19,13 +18,9 @@ import { ErrorService } from './error/error.service';
 import { ErrorComponent } from './error/error.component';
 import {
     InputTextModule,
-    InputTextareaModule,
-    DataTableModule,
     ButtonModule,
     ToggleButtonModule,
     DropdownModule,
-    DialogModule,
-    CalendarModule,
     TabMenuModule,
     PasswordModule,
     GrowlModule,
@@ -38,7 +33,6 @@ import 'rxjs/add/operator/toPromise';
 @NgModule({
     declarations: [
         AppComponent,
-        CustomerComponent,
         AuthenticationComponent,
         HeaderComponent,
         SignupComponent,
@@ -55,23 +49,19 @@ import 'rxjs/add/operator/toPromise';
         HttpModule,
         routing,
         InputTextModule,
-        InputTextareaModule,
-        DataTableModule,
         ButtonModule,
         ToggleButtonModule,
         DropdownModule,
-        DialogModule,
-        CalendarModule,
         TabMenuModule,
         PasswordModule,
         GrowlModule,
         PanelModule,
-        ConfirmDialogModule
+        ConfirmDialogModule,
+        CustomerModule
     ],
     bootstrap: [AppComponent],
     providers: [
         AuthService,
-        CustomerService,
         ErrorService
     ]
 })
