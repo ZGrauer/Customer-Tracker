@@ -28,6 +28,7 @@ export class CustomerComponent implements OnInit {
     userSelection: SelectItem[] = [];
     currentUserId: String;
     customerform: FormGroup;
+    statuses: SelectItem[] = [];
 
     constructor(
         private customerService: CustomerService,
@@ -62,6 +63,13 @@ export class CustomerComponent implements OnInit {
             'updateDt': new FormControl(''),
             'updateUser': new FormControl({ disabled: true })
         });
+
+        this.statuses.push({ label: '0 - No contact', value: 'No contact' });
+        this.statuses.push({ label: '1 - Engaged Team', value: 'Engaged Team' });
+        this.statuses.push({ label: '2 - Design Complete', value: 'Design Complete' });
+        this.statuses.push({ label: '3 - Implementation Complete', value: 'Implementation Complete' });
+        this.statuses.push({ label: '4 - Migration Complete', value: 'Migration Complete' });
+        this.statuses.push({ label: 'Basic - No P28', value: 'Basic - No P28' });
     }
 
     showDialogToAdd() {

@@ -18,7 +18,7 @@
 
 <p-confirmDialog></p-confirmDialog>
 <p-dialog header="Customer Details" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [modal]="true" width="600">
-    <p-growl [value]="msgs" sticky="sticky"></p-growl>
+    <p-growl [value]="msgs" life="5000"></p-growl>
     <form [formGroup]="customerform" (ngSubmit)="save(customerform.value)">
         <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad" *ngIf="customer">
             <div class="ui-grid-row">
@@ -43,7 +43,7 @@
             </div>
             <div class="ui-grid-row">
                 <div class="ui-grid-col-3"><label for="status">Status</label></div>
-                <div class="ui-grid-col-6"><input pInputText id="status" formControlName="status" [(ngModel)]="customer.status" /></div>
+                <div class="ui-grid-col-6"><p-dropdown [options]="statuses" id="status" formControlName="status" [(ngModel)]="customer.status" [style]="{'width':'175px'}"></p-dropdown></div>
                 <div class="ui-grid-col-3">
                     <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!customerform.controls['status'].valid&&customerform.controls['status'].dirty">
                         <i class="fa fa-times-circle"></i> Status is required
