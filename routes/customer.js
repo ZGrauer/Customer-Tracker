@@ -92,6 +92,9 @@ router.post('/', function(req, res, next) {
                 }
                 res.status(201).json({
                     message: 'Success',
+                    error: {
+                        message: 'Customer added'
+                    },
                     obj: result
                 });
             });
@@ -145,6 +148,9 @@ router.patch('/:id', function(req, res, next) {
             }
             res.status(200).json({
                 message: 'Success',
+                error: {
+                    message: 'Customer updated'
+                },
                 obj: result
             });
         });
@@ -186,6 +192,9 @@ router.delete('/:_id', function(req, res, next) {
             }
             res.status(200).json({
                 message: 'Success',
+                error: {
+                    message: 'Customer deleted'
+                },
                 obj: result
             });
         });

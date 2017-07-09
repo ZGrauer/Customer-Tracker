@@ -79,8 +79,25 @@ export class SignupComponent implements OnInit {
                 error => console.log(error)
                 );
         }
-        this.user = null;
-        this.displayDialog = false;
+        this.user =  new User('', '', '', '', false, false);
     }
 
+
+    delete() {
+        this.authService.deleteUser(this.user)
+            .subscribe(
+            data => console.log(data),
+            error => console.log(error)
+            );
+        this.userform.reset();
+        this.users.splice(this.findSelectedUserIndex(), 1);
+    }
+
+    findSelectedUserIndex(): number {
+        for (let i = 0; i < this.users.length; i++) {
+            if (this.users[i]._id == this.user._id ) {
+                return i;
+            }
+        }
+    }
 }

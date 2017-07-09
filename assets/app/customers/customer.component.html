@@ -1,5 +1,5 @@
 <p-dataTable #dt [value]="customers" selectionMode="single" [(selection)]="selectedCustomer" (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15" [responsive]="true" [immutable]="false">
-    <p-header>Customer CRUD</p-header>
+    <p-header>Customers</p-header>
     <p-column field="h1" header="H1" [sortable]="true"></p-column>
     <p-column field="name" header="Cust Name" [sortable]="true"></p-column>
     <p-column field="status" header="Build Status" [sortable]="true"></p-column>

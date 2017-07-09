@@ -42,14 +42,65 @@ router.post('/', function(req, res, next) {
         }
         res.status(201).json({
             title: 'Success',
-            message: 'Added User',
+            error: {
+                message: 'Added user'
+            },
             obj: result
         });
     });
 });
 
 
+router.patch('/changePassword', function(req, res, next) {
+    //console.log(req.body);
+    User.findById(req.body._userId, function(err, user) {
+        if (err) {
+            return res.status(500).json({
+                title: 'Error',
+                error: err
+            });
+        }
+        if (!user) {
+            return res.status(500).json({
+                title: 'Error',
+                error: {
+                    message: 'User not found'
+                }
+            });
+        }
+        //console.log(user);
+
+        if (!bcrypt.compareSync(req.body.oldPassword, user.password)) {
+            return res.status(401).json({
+                title: 'Error',
+                error: {
+                    message: 'Update failed. Invalid password'
+                }
+            });
+        }
+        user.password = bcrypt.hashSync(req.body.newPassword, 10);
+        //console.log(user);
+        user.save(function(err, result) {
+            if (err) {
+                return res.status(500).json({
+                    title: 'Error',
+                    error: err
+                });
+            }
+            res.status(200).json({
+                title: 'Success',
+                error: {
+                    message: 'Password updated'
+                },
+                obj: result
+            });
+        });
+
+    });
+});
+
 router.patch('/:id', function(req, res, next) {
+    //console.log('Server is updating User...');
     var decoded = jwt.decode(req.query.token);
     User.findById(req.params.id, function(err, user) {
         if (err) {
@@ -90,13 +141,59 @@ router.patch('/:id', function(req, res, next) {
             }
             res.status(200).json({
                 title: 'Success',
-                message: 'Updated User',
+                error: {
+                    message: 'User Updated'
+                },
                 obj: result
             });
         });
 
     });
 
+});
+
+
+router.delete('/:_id', function(req, res, next) {
+    var decoded = jwt.decode(req.query.token);
+    User.findById(req.params._id, function(err, user) {
+        if (err) {
+            return res.status(500).json({
+                title: 'Error',
+                error: err
+            });
+        }
+        if (!user) {
+            return res.status(500).json({
+                title: 'Error',
+                error: {
+                    message: 'User not found'
+                }
+            });
+        }
+        if (!decoded.user.admin) {
+            return res.status(500).json({
+                title: 'Not Authorized',
+                error: {
+                    message: 'User not authorized'
+                }
+            });
+        }
+        user.remove(function(err, result) {
+            if (err) {
+                return res.status(500).json({
+                    title: 'Error',
+                    error: err
+                });
+            }
+            res.status(200).json({
+                title: 'Success',
+                error: {
+                    message: 'Deleted user'
+                },
+                obj: result
+            });
+        });
+    });
 });
 
 
@@ -134,7 +231,9 @@ router.post('/signin', function(req, res, next) {
         });
         res.status(200).json({
             title: 'Success',
-            message: 'Logged In',
+            error: {
+                message: 'Logged in'
+            },
             token: token,
             userId: user._id,
             admin: user.admin,
@@ -143,47 +242,5 @@ router.post('/signin', function(req, res, next) {
     });
 });
 
-
-router.patch('/changePassword', function(req, res, next) {
-    User.findById(req.body._userId, function(err, user) {
-        if (err) {
-            return res.status(500).json({
-                title: 'Error',
-                error: err
-            });
-        }
-        if (!user) {
-            return res.status(500).json({
-                title: 'No User Found',
-                error: {
-                    message: 'User not found'
-                }
-            });
-        }
-        if (!bcrypt.compareSync(req.body.oldPassword, user.password)) {
-            return res.status(401).json({
-                title: 'Update failed',
-                error: {
-                    message: 'Invalid password'
-                }
-            });
-        }
-        user.password = bcrypt.hashSync(req.body.newPassword, 10);
-        user.save(function(err, result) {
-            if (err) {
-                return res.status(500).json({
-                    title: 'Error',
-                    error: err
-                });
-            }
-            res.status(200).json({
-                title: 'Success',
-                message: 'Password Updated',
-                obj: result
-            });
-        });
-
-    });
-});
 
 module.exports = router;

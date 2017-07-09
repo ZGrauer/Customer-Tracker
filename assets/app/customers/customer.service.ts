@@ -38,6 +38,7 @@ export class CustomerService {
                     result.obj.user._id
                 );
                 this.customers.push(customer);
+                this.errorService.handleError(response.json());
                 return customer;
             })
             .catch((error: Response) => {
@@ -88,7 +89,11 @@ export class CustomerService {
             : '';
         console.log(customer);
         return this.http.patch('customer/' + customer._id + token, body, { headers: headers })
-            .map((response: Response) => response.json())
+            .map((response: Response) => {
+                //console.log(response);
+                this.errorService.handleError(response.json());
+                return response.json();
+            })
             .catch((error: Response) => {
                 //console.error(error);
                 this.errorService.handleError(error.json());
@@ -102,7 +107,11 @@ export class CustomerService {
             ? '?token=' + localStorage.getItem('token')
             : '';
         return this.http.delete('customer/' + customer._id + token)
-            .map((response: Response) => response.json())
+            .map((response: Response) => {
+                //console.log(response);
+                this.errorService.handleError(response.json());
+                return response.json();
+            })
             .catch((error: Response) => {
                 //console.error(error);
                 this.errorService.handleError(error.json());

@@ -24,14 +24,18 @@ export class AuthService {
             false
         )];
 
-    constructor(private http: Http, private errorService:ErrorService) { }
+    constructor(private http: Http, private errorService: ErrorService) { }
 
     addUser(user: User) {
         this.users.push(user);
         const body = JSON.stringify(user);
         const headers = new Headers({ 'Content-Type': 'application/json' });
         return this.http.post('user', body, { headers: headers })
-            .map((response: Response) => response.json())
+            .map((response: Response) => {
+                console.log(response.json());
+                this.errorService.handleError(response.json());
+                return response.json();
+            })
             .catch((error: Response) => {
                 //console.error(error);
                 this.errorService.handleError(error.json());
@@ -74,6 +78,20 @@ export class AuthService {
 
     deleteUser(user: User) {
         this.users.splice(this.users.indexOf(user), 1);
+        const token = localStorage.getItem('token')
+            ? '?token=' + localStorage.getItem('token')
+            : '';
+        return this.http.delete('user/' + user._id + token)
+            .map((response: Response) => {
+                //console.log(response);
+                this.errorService.handleError(response.json());
+                return response.json();
+            })
+            .catch((error: Response) => {
+                //console.error(error);
+                this.errorService.handleError(error.json());
+                return Observable.throw(error.json());
+            });
     }
 
     updatePassword(oldPassword: String, newPassword: String) {
@@ -84,7 +102,11 @@ export class AuthService {
         });
         const headers = new Headers({ 'Content-Type': 'application/json' });
         return this.http.patch('user/changePassword', body, { headers: headers })
-            .map((response: Response) => response.json())
+            .map((response: Response) => {
+                //console.log(response);
+                this.errorService.handleError(response.json());
+                return response.json();
+            })
             .catch((error: Response) => {
                 //console.log('Server Response in Service: ' + error);
                 //console.error();
@@ -93,16 +115,18 @@ export class AuthService {
             });
     }
 
-    updateUser(user:User) {
+    updateUser(user: User) {
         const body = JSON.stringify(user);
         const headers = new Headers({ 'Content-Type': 'application/json' });
         const token = localStorage.getItem('token')
             ? '?token=' + localStorage.getItem('token')
             : '';
-        console.log('Req Body: ');
-        console.log(body);
         return this.http.patch('user/' + user._id + token, body, { headers: headers })
-            .map((response: Response) => response.json())
+            .map((response: Response) => {
+                console.log(response.json());
+                this.errorService.handleError(response.json());
+                return response.json();
+            })
             .catch((error: Response) => {
                 //console.error(error);
                 this.errorService.handleError(error.json());
@@ -124,7 +148,7 @@ export class AuthService {
 
     logout() {
         localStorage.clear();
-        this.errorService.handleError({title:'Success', error:{message:'Logged out'}});
+        this.errorService.handleError({ title: 'Success', error: { message: 'Logged out' } });
     }
 
     isLoggedIn(): boolean {
