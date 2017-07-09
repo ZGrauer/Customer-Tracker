@@ -49,6 +49,57 @@ router.post('/', function(req, res, next) {
 });
 
 
+router.patch('/:id', function(req, res, next) {
+    var decoded = jwt.decode(req.query.token);
+    User.findById(req.params.id, function(err, user) {
+        if (err) {
+            return res.status(500).json({
+                title: 'Error',
+                error: err
+            });
+        }
+        if (!user) {
+            return res.status(500).json({
+                title: 'Error',
+                error: {
+                    message: 'User not found.  Cannot update.'
+                }
+            });
+        }
+        if (!decoded.user.admin) {
+            return res.status(500).json({
+                title: 'Not Authorized',
+                error: {
+                    message: 'User not authorized'
+                }
+            });
+        }
+
+        user.firstName = req.body.firstName;
+        user.lastName = req.body.lastName;
+        user.password = bcrypt.hashSync(req.body.password, 10);
+        user.email = req.body.email;
+        user.admin = req.body.admin;
+        user.deleted = req.body.deleted;
+        user.save(function(err, result) {
+            if (err) {
+                return res.status(500).json({
+                    title: 'Error',
+                    error: err
+                });
+            }
+            res.status(200).json({
+                title: 'Success',
+                message: 'Updated User',
+                obj: result
+            });
+        });
+
+    });
+
+});
+
+
 router.post('/signin', function(req, res, next) {
     User.findOne({
         email: req.body.email

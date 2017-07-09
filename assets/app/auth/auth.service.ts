@@ -50,8 +50,8 @@ export class AuthService {
                     transformedUsers.push(new User(
                         user.firstName,
                         user.lastName,
-                        '',
                         user.email,
+                        '',
                         user.admin,
                         user.deleted,
                         user._id
@@ -88,6 +88,23 @@ export class AuthService {
             .catch((error: Response) => {
                 //console.log('Server Response in Service: ' + error);
                 //console.error();
+                this.errorService.handleError(error.json());
+                return Observable.throw(error.json());
+            });
+    }
+
+    updateUser(user:User) {
+        const body = JSON.stringify(user);
+        const headers = new Headers({ 'Content-Type': 'application/json' });
+        const token = localStorage.getItem('token')
+            ? '?token=' + localStorage.getItem('token')
+            : '';
+        console.log('Req Body: ');
+        console.log(body);
+        return this.http.patch('user/' + user._id + token, body, { headers: headers })
+            .map((response: Response) => response.json())
+            .catch((error: Response) => {
+                //console.error(error);
                 this.errorService.handleError(error.json());
                 return Observable.throw(error.json());
             });
