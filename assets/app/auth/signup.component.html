@@ -1,4 +1,4 @@
-<p-growl [value]="msgs" sticky="sticky"></p-growl>
+<p-growl [value]="msgs" life="5000"></p-growl>
 <p-confirmDialog></p-confirmDialog>
 <form [formGroup]="userform" (ngSubmit)="onSubmit(userform.value)">
     <p-panel header="Add/Edit User">

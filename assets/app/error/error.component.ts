@@ -38,9 +38,21 @@ export class ErrorComponent implements OnInit {
             severity = 'info';
         }
         this.msgs.push({ severity: severity, summary: this.msg.title, detail: this.msg.message });
+        this.setHideTimeout();
     }
 
     clear() {
         this.msgs = [];
     }
+
+
+    /**
+     * setHideTimeout - Workaround for <p-growl> life property not working.  Removes error messages after 5 seconds    
+     *
+     * @returns {void}
+     */
+    setHideTimeout() {
+        setTimeout(() => { this.clear(); }, 5000);
+    }
+
 }

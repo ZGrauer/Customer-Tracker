@@ -1,4 +1,4 @@
-<p-growl [value]="msgs" sticky="sticky"></p-growl>
+<p-growl [value]="msgs" life="5000"></p-growl>
 
 <form [formGroup]="loginform" (ngSubmit)="onSubmit(loginform.value)">
     <p-panel header="Login">
