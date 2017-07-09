@@ -4,7 +4,7 @@ import { Router } from "@angular/router";
 import { Observable } from 'rxjs/Rx';
 import { User } from "./user.model";
 import { AuthService } from "./auth.service";
-import { ErrorService } from '../error/error.service';
+
 import '../../../node_modules/primeng/resources/themes/omega/theme.css';
 import '../../../node_modules/primeng/resources/primeng.min.css';
 import '../../../public/stylesheets/font-awesome-4.7.0/css/font-awesome.min.css';
@@ -20,7 +20,7 @@ export class SigninComponent implements OnInit {
     displayDialog: boolean = false;
     loginform: FormGroup;
 
-    constructor(private authService: AuthService, private router: Router, private fb: FormBuilder, private errorService: ErrorService) {}
+    constructor(private authService: AuthService, private router: Router, private fb: FormBuilder) {}
 
     ngOnInit() {
         this.loginform = this.fb.group({
@@ -41,7 +41,6 @@ export class SigninComponent implements OnInit {
                 },
                 error => {
                     console.error(error);
-                    this.errorService.handleError(error);
                     return Observable.throw(error);
                 }
             );

@@ -3,6 +3,7 @@ import 'rxjs/Rx';
 import { Observable } from 'rxjs/Rx';
 import { User } from './user.model';
 import { Http, Response, Headers } from '@angular/http';
+import { ErrorService } from '../error/error.service';
 
 @Injectable()
 export class AuthService {
@@ -23,7 +24,7 @@ export class AuthService {
             false
         )];
 
-    constructor(private http: Http) { }
+    constructor(private http: Http, private errorService:ErrorService) { }
 
     addUser(user: User) {
         this.users.push(user);
@@ -31,7 +32,11 @@ export class AuthService {
         const headers = new Headers({ 'Content-Type': 'application/json' });
         return this.http.post('user', body, { headers: headers })
             .map((response: Response) => response.json())
-            .catch((error: Response) => Observable.throw(error.json()));
+            .catch((error: Response) => {
+                //console.error(error);
+                this.errorService.handleError(error.json());
+                return Observable.throw(error.json());
+            });
     }
 
     getUsers() {
@@ -56,7 +61,11 @@ export class AuthService {
                 //console.log(transformedUsers);
                 return transformedUsers;
             })
-            .catch((error: Response) => Observable.throw('Error in Auth Service! ' + error.text));
+            .catch((error: Response) => {
+                //console.error(error);
+                this.errorService.handleError(error.json());
+                return Observable.throw(error.json());
+            });
     }
 
     getUserId(): String {
@@ -76,7 +85,12 @@ export class AuthService {
         const headers = new Headers({ 'Content-Type': 'application/json' });
         return this.http.patch('user/changePassword', body, { headers: headers })
             .map((response: Response) => response.json())
-            .catch((error: Response) => Observable.throw(error.json()));
+            .catch((error: Response) => {
+                //console.log('Server Response in Service: ' + error);
+                //console.error();
+                this.errorService.handleError(error.json());
+                return Observable.throw(error.json());
+            });
     }
 
     signin(email: String, password: String) {
@@ -84,11 +98,16 @@ export class AuthService {
         const headers = new Headers({ 'Content-Type': 'application/json' });
         return this.http.post('user/signin', body, { headers: headers })
             .map((response: Response) => response.json())
-            .catch((error: Response) => Observable.throw(error.json()));
+            .catch((error: Response) => {
+                console.error(error);
+                this.errorService.handleError(error.json());
+                return Observable.throw(error.json());
+            });
     }
 
     logout() {
         localStorage.clear();
+        this.errorService.handleError({title:'Success', error:{message:'Logged out'}});
     }
 
     isLoggedIn(): boolean {

@@ -16,7 +16,8 @@ router.get('/', function(req, res, next) {
                 });
             }
             res.status(200).json({
-                message: 'Success',
+                title: 'Success',
+                message: 'Returned Users',
                 obj: users
             });
         });
@@ -40,7 +41,8 @@ router.post('/', function(req, res, next) {
             });
         }
         res.status(201).json({
-            message: 'Success',
+            title: 'Success',
+            message: 'Added User',
             obj: result
         });
     });
@@ -80,7 +82,8 @@ router.post('/signin', function(req, res, next) {
             expiresIn: 7200
         });
         res.status(200).json({
-            message: 'Success',
+            title: 'Success',
+            message: 'Logged In',
             token: token,
             userId: user._id,
             admin: user.admin,
@@ -123,7 +126,8 @@ router.patch('/changePassword', function(req, res, next) {
                 });
             }
             res.status(200).json({
-                message: 'Success',
+                title: 'Success',
+                message: 'Password Updated',
                 obj: result
             });
         });

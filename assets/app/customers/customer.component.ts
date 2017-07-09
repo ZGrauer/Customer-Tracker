@@ -1,6 +1,6 @@
 import { Component, ViewEncapsulation, OnInit } from "@angular/core";
 import { Validators, FormControl, FormGroup, FormBuilder } from '@angular/forms';
-
+import { Router } from "@angular/router";
 import { Customer } from "./customer.model";
 import { User } from "../auth/user.model";
 import { CustomerService } from './customer.service';
@@ -28,7 +28,7 @@ export class CustomerComponent implements OnInit {
     currentUserId: String;
     customerform: FormGroup;
 
-    constructor(private customerService: CustomerService, private authService: AuthService, private fb: FormBuilder) { }
+    constructor(private customerService: CustomerService, private router: Router, private authService: AuthService, private fb: FormBuilder) { }
 
     ngOnInit() {
         //this.customers = this.customerService.getCustomers();
@@ -80,15 +80,22 @@ export class CustomerComponent implements OnInit {
         if (this.newCustomer) {
             this.customerService.addCustomer(this.customer)
                 .subscribe(
-                data => console.log(data),
+                data => {
+                    console.log(data);
+                    this.router.navigateByUrl('/');
+                },
                 error => console.log(error)
                 );
         } else {
             this.customers[this.findSelectedCustomerIndex()] = this.customer;
             this.customerService.updateCustomer(this.customer)
-                .subscribe(
-                result => console.log(result)
-                );
+            .subscribe(
+            result => {
+                console.log(result);
+                this.router.navigateByUrl('/');
+            },
+            error => console.log(error)
+            );
         }
 
         this.customer = null;

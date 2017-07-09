@@ -13,7 +13,7 @@ import '../../../public/stylesheets/font-awesome-4.7.0/css/font-awesome.min.css'
     `
 })
 export class ErrorComponent implements OnInit {
-    error: Error;
+    msg: Error;
     msgs: Message[] = [];
 
     constructor(private errorService: ErrorService) {}
@@ -21,24 +21,23 @@ export class ErrorComponent implements OnInit {
     ngOnInit() {
         this.errorService.errorOccurred
             .subscribe(
-                (error: Error) => {
+                (msg: Error) => {
                     console.log('Error received by ErrorComponent: ');
-                    console.log(error);
-                    this.error = error;
-                    this.showError();
+                    console.log(msg);
+                    this.msg = msg;
+                    this.showMsg();
                 }
             );
     }
 
-    showError() {
+    showMsg() {
         var severity: string = '';
-        if (this.error.title == 'Error' || this.error.title == 'Success') {
-            severity = this.error.title.toLowerCase();
+        if (this.msg.title == 'Error' || this.msg.title == 'Success') {
+            severity = this.msg.title.toLowerCase();
         } else {
             severity = 'info';
         }
-
-        this.msgs.push({ severity: severity, summary: this.error.title, detail: this.error.message });
+        this.msgs.push({ severity: severity, summary: this.msg.title, detail: this.msg.message });
     }
 
     clear() {

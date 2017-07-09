@@ -1,16 +1,18 @@
 import { Injectable, EventEmitter } from '@angular/core';
+import { Http, Response, Headers } from '@angular/http';
 import 'rxjs/Rx';
 import { Observable } from 'rxjs/Rx';
-import { Customer } from './customer.model';
-import { Http, Response, Headers } from '@angular/http';
 import * as moment from 'moment';
+import { Customer } from './customer.model';
+import { ErrorService } from '../error/error.service';
+
 
 @Injectable()
 export class CustomerService {
     customerIsEdited = new EventEmitter<Customer>();
     private customers: Customer[] = [];
 
-    constructor(private http: Http) { }
+    constructor(private http: Http, private errorService:ErrorService) { }
 
     addCustomer(customer: Customer) {
         const body = JSON.stringify(customer);
@@ -38,7 +40,11 @@ export class CustomerService {
                 this.customers.push(customer);
                 return customer;
             })
-            .catch((error: Response) => Observable.throw('Error in Customer Service! ' + error.text));
+            .catch((error: Response) => {
+                //console.error(error);
+                this.errorService.handleError(error.json());
+                return Observable.throw(error.json());
+            });
     }
 
     getCustomers() {
@@ -67,7 +73,11 @@ export class CustomerService {
                 this.customers = transformedCustomers;
                 return transformedCustomers;
             })
-            .catch((error: Response) => Observable.throw('Error in Customer Service! ' + error.text));
+            .catch((error: Response) => {
+                //console.error(error);
+                this.errorService.handleError(error.json());
+                return Observable.throw(error.json());
+            });
     }
 
     updateCustomer(customer:Customer) {
@@ -79,7 +89,11 @@ export class CustomerService {
         console.log(customer);
         return this.http.patch('customer/' + customer._id + token, body, { headers: headers })
             .map((response: Response) => response.json())
-            .catch((error: Response) => Observable.throw('Error in Customer Service! ' + error.text));
+            .catch((error: Response) => {
+                //console.error(error);
+                this.errorService.handleError(error.json());
+                return Observable.throw(error.json());
+            });
     }
 
     deleteCustomer(customer: Customer) {
@@ -89,6 +103,10 @@ export class CustomerService {
             : '';
         return this.http.delete('customer/' + customer._id + token)
             .map((response: Response) => response.json())
-            .catch((error: Response) => Observable.throw('Error in Customer Service! ' + error.text));
+            .catch((error: Response) => {
+                //console.error(error);
+                this.errorService.handleError(error.json());
+                return Observable.throw(error.json());
+            });
     }
 }
