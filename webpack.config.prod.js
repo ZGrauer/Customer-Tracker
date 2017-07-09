@@ -3,6 +3,7 @@ var path = require('path');
 var webpack = require('webpack');
 var webpackMerge = require('webpack-merge');
 var commonConfig = require('./webpack.config.common.js');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = webpackMerge.smart(commonConfig, {
     entry: {
@@ -17,21 +18,20 @@ module.exports = webpackMerge.smart(commonConfig, {
     },
 
     module: {
-        rules: [
-            {
-                test: /\.ts$/,
-                use: [
-                    'awesome-typescript-loader',
-                    'angular2-template-loader',
-                    'angular-router-loader?aot=true'
-                ]
-            }
-        ]
+        rules: [{
+            test: /\.ts$/,
+            use: [
+                'awesome-typescript-loader',
+                'angular2-template-loader',
+                'angular-router-loader?aot=true'
+            ]
+        }]
     },
 
     plugins: [
         new webpack.optimize.UglifyJsPlugin({
             sourceMap: false
-        })
+        }),
+        new ExtractTextPlugin('../../stylesheets/[name].css')
     ]
 });

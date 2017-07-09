@@ -8,6 +8,7 @@ import { AuthService } from "./auth.service";
 import '../../../node_modules/primeng/resources/themes/omega/theme.css';
 import '../../../node_modules/primeng/resources/primeng.min.css';
 import '../../../public/stylesheets/font-awesome-4.7.0/css/font-awesome.min.css';
+import { Message } from 'primeng/primeng';
 
 
 @Component({
@@ -19,6 +20,7 @@ export class SigninComponent implements OnInit {
     password: String;
     displayDialog: boolean = false;
     loginform: FormGroup;
+    msgs: Message[] = [];
 
     constructor(private authService: AuthService, private router: Router, private fb: FormBuilder) {}
 

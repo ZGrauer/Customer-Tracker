@@ -7,7 +7,7 @@ import { AuthService } from './auth.service';
 import '../../../node_modules/primeng/resources/themes/omega/theme.css';
 import '../../../node_modules/primeng/resources/primeng.min.css';
 import '../../../public/stylesheets/font-awesome-4.7.0/css/font-awesome.min.css';
-import { SelectItem, ConfirmationService } from 'primeng/primeng';
+import { SelectItem, ConfirmationService, Message } from 'primeng/primeng';
 
 @Component({
     selector: 'app-signup',
@@ -23,6 +23,7 @@ export class SignupComponent implements OnInit {
     users: User[] = [];
     userSelection: SelectItem[] = [];
     userform: FormGroup;
+    msgs: Message[] = [];
 
     constructor(
         private authService: AuthService,

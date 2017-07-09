@@ -9,7 +9,7 @@ import { AuthService } from '../auth/auth.service';
 import '../../../node_modules/primeng/resources/themes/omega/theme.css';
 import '../../../node_modules/primeng/resources/primeng.min.css';
 import '../../../public/stylesheets/font-awesome-4.7.0/css/font-awesome.min.css';
-import { SelectItem, ConfirmationService } from 'primeng/primeng';
+import { SelectItem, ConfirmationService, Message } from 'primeng/primeng';
 
 @Component({
     selector: 'app-customer',
@@ -29,6 +29,7 @@ export class CustomerComponent implements OnInit {
     currentUserId: String;
     customerform: FormGroup;
     statuses: SelectItem[] = [];
+    msgs: Message[] = [];
 
     constructor(
         private customerService: CustomerService,
@@ -90,7 +91,7 @@ export class CustomerComponent implements OnInit {
             );
     }
 
-    save(value: String) {
+    save() {
         this.customer._updateUserId = this.authService.getUserId();
         if (this.newCustomer) {
             this.customerService.addCustomer(this.customer)

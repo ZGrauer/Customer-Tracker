@@ -8,6 +8,8 @@
     "experimentalDecorators": true,
     "removeComments": false,
     "noImplicitAny": false,
+    "skipLibCheck": true,
+    "noStrictGenericChecks": true,
     "outDir": "./public/js/app"
   },
   "typeRoots": [
