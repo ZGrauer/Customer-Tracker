@@ -1,5 +1,5 @@
 <p-growl [value]="msgs" sticky="sticky"></p-growl>
-
+<p-confirmDialog></p-confirmDialog>
 <form [formGroup]="userform" (ngSubmit)="onSubmit(userform.value)">
     <p-panel header="Add/Edit User">
         <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad" *ngIf="user">
@@ -55,6 +55,6 @@
         </div>
 
         <button type="button" pButton icon="fa-save" type="submit" label="Save" [disabled]="!userform.valid"></button>
-        <button type="button" pButton icon="fa-trash-o" (click)="delete()" label="Delete" *ngIf="!newUser"></button>
+        <button type="button" pButton icon="fa-trash-o" (click)="confirm()" label="Delete" *ngIf="!newUser"></button>
     </p-panel>
 </form>

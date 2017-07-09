@@ -7,12 +7,13 @@ import { AuthService } from './auth.service';
 import '../../../node_modules/primeng/resources/themes/omega/theme.css';
 import '../../../node_modules/primeng/resources/primeng.min.css';
 import '../../../public/stylesheets/font-awesome-4.7.0/css/font-awesome.min.css';
-import {SelectItem} from 'primeng/primeng';
+import { SelectItem, ConfirmationService } from 'primeng/primeng';
 
 @Component({
     selector: 'app-signup',
     templateUrl: './signup.component.html',
-    encapsulation: ViewEncapsulation.None
+    encapsulation: ViewEncapsulation.None,
+    providers: [ConfirmationService]
 })
 export class SignupComponent implements OnInit {
     displayDialog: boolean = false;
@@ -23,7 +24,11 @@ export class SignupComponent implements OnInit {
     userSelection: SelectItem[] = [];
     userform: FormGroup;
 
-    constructor(private authService: AuthService, private fb: FormBuilder) { }
+    constructor(
+        private authService: AuthService,
+        private fb: FormBuilder,
+        private confirmationService: ConfirmationService
+    ) { }
 
     ngOnInit() {
         this.newUser = true;
@@ -79,7 +84,7 @@ export class SignupComponent implements OnInit {
                 error => console.log(error)
                 );
         }
-        this.user =  new User('', '', '', '', false, false);
+        this.user = new User('', '', '', '', false, false);
     }
 
 
@@ -95,9 +100,24 @@ export class SignupComponent implements OnInit {
 
     findSelectedUserIndex(): number {
         for (let i = 0; i < this.users.length; i++) {
-            if (this.users[i]._id == this.user._id ) {
+            if (this.users[i]._id == this.user._id) {
                 return i;
             }
         }
+    }
+
+    confirm() {
+        this.displayDialog = false;
+        this.confirmationService.confirm({
+            message: 'Are you sure that you want to delete?',
+            header: 'Delete Confirmation',
+            icon: 'fa fa-trash',
+            accept: () => {
+                this.delete();
+            },
+            reject: () => {
+                console.log('User not deleted');
+            }
+        });
     }
 }

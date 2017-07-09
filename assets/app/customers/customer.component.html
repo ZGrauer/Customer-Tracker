@@ -16,6 +16,7 @@
     </p-footer>
 </p-dataTable>
 
+<p-confirmDialog></p-confirmDialog>
 <p-dialog header="Customer Details" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [modal]="true" width="600">
     <p-growl [value]="msgs" sticky="sticky"></p-growl>
     <form [formGroup]="customerform" (ngSubmit)="save(customerform.value)">
@@ -78,7 +79,7 @@
         </div>
         <p-footer>
             <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-                <button type="button" pButton icon="fa-trash-o" (click)="delete()" label="Delete" *ngIf="!newCustomer&&isAdmin()"></button>
+                <button type="button" pButton icon="fa-trash-o" (click)="confirm()" label="Delete" *ngIf="!newCustomer&&isAdmin()"></button>
                 <button type="button" pButton icon="fa-save" (click)="save()" label="Save" [disabled]="!customerform.valid"></button>
             </div>
         </p-footer>

@@ -29,7 +29,8 @@ import {
     TabMenuModule,
     PasswordModule,
     GrowlModule,
-    PanelModule
+    PanelModule,
+    ConfirmDialogModule
 } from 'primeng/primeng';
 
 import 'rxjs/add/operator/toPromise';
@@ -64,7 +65,8 @@ import 'rxjs/add/operator/toPromise';
         TabMenuModule,
         PasswordModule,
         GrowlModule,
-        PanelModule
+        PanelModule,
+        ConfirmDialogModule
     ],
     bootstrap: [AppComponent],
     providers: [
