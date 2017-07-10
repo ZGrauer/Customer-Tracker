@@ -1,7 +1,7 @@
 # Customer Tracker
 ----
 
-A full [MEAN](https://en.wikipedia.org/wiki/MEAN_(software_bundle)) stack app to perform [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) operations related to customer migrations/implementations. The Customer Tracker website allows users to added, edited, or deleted customer records.  Non-registered users can access a table of customer data and export it to a .CSV file.  Records are displayed in a sortable, editable datatable.
+A full [MEAN](https://en.wikipedia.org/wiki/MEAN_(software_bundle)) stack app to perform [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) operations related to customer migrations/implementations. The Customer Tracker website allows users to add, edit, or delete customer records.  Non-registered users can access a table of customer data and export it to a .CSV file.  Records are displayed in a sortable, editable datatable.
 
 All of this data is stored in a [mongoDB](https://www.mongodb.com/) database instance. [Mongoose](http://mongoosejs.com/) is used to model mongoDB objects in node.js.
 
