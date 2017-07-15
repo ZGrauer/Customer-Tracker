@@ -84,6 +84,7 @@ export class CustomerService {
             });
     }
 
+
     updateCustomer(customer: Customer) {
         const body = JSON.stringify(customer);
         const headers = new Headers({ 'Content-Type': 'application/json' });

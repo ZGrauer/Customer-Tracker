@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation, OnInit } from "@angular/core";
+import { Component, ViewEncapsulation, OnInit } from '@angular/core';
 import { Validators, FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { Router } from "@angular/router";
 import { Customer } from "./customer.model";
@@ -31,6 +31,8 @@ export class CustomerComponent implements OnInit {
     statuses: SelectItem[] = [];
     msgs: Message[] = [];
     showAllCustomers: boolean = true;
+    customerStatusChartData: any;
+    customerStatusChartTitle: string;
 
     constructor(
         private customerService: CustomerService,
@@ -88,6 +90,7 @@ export class CustomerComponent implements OnInit {
             (customers: Customer[]) => {
                 //console.log(customers);
                 this.customers = customers;
+                this.updateChart();
             }
             );
     }
@@ -176,5 +179,65 @@ export class CustomerComponent implements OnInit {
                 console.log('Customer not deleted');
             }
         });
+    }
+
+    updateChart() {
+        let labels: String[] = this.getStatusChartLabels();
+        let counts: number[] = this.getStatusChartData(labels);
+
+        //console.log(labels);
+        //console.log(counts);
+        this.customerStatusChartTitle = 'Build Status Counts';
+        this.customerStatusChartData = {
+            labels: labels,
+            datasets: [
+                {
+                    data: counts,
+                    backgroundColor: [
+                        '#ff6384',
+                        '#36a2eb',
+                        '#ffce56',
+                        '#4bc0c0',
+                        '#ff9f40'
+                    ],
+                    hoverBackgroundColor: [
+                        '#FF6384',
+                        '#36A2EB',
+                        '#FFCE56',
+                        '#4bc0c0',
+                        '#ff9f40'
+                    ]
+                }]
+        };
+    }
+
+    getStatusChartLabels():String[] {
+        let labels: String[] = [];
+        for (let i = 0; i < this.customers.length; i++) {
+            let foundmatch: boolean = false;
+            for (let j = 0; j < labels.length; j++) {
+                if (labels[j] == this.customers[i].status) {
+                    foundmatch = true;
+                    break;
+                }
+            }
+            if (!foundmatch) {
+                labels.push(this.customers[i].status);
+            }
+        }
+        return labels;
+    }
+
+    getStatusChartData(labels: String[]):number[] {
+        let counts: number[] = [];
+        for (let i = 0; i < labels.length; i++) {
+            counts.push(0);
+            for (let j = 0; j < this.customers.length; j++) {
+                if (labels[i] == this.customers[j].status) {
+                    counts[i]++;
+                }
+            }
+        }
+        return counts;
     }
 }

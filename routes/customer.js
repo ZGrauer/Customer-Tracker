@@ -24,6 +24,7 @@ router.get('/', function(req, res, next) {
         });
 });
 
+
 router.get('/:userId', function(req, res, next) {
     User.findById(req.params.userId, function(err, user) {
         if (err) {
@@ -33,8 +34,8 @@ router.get('/:userId', function(req, res, next) {
             });
         }
 
-        console.log('User: ');
-        console.log(user);
+        //console.log('User: ');
+        //console.log(user);
         Customer.find({
                 user: user
             })
@@ -54,6 +55,7 @@ router.get('/:userId', function(req, res, next) {
 
     });
 });
+
 
 router.use('/', function(req, res, next) {
     jwt.verify(req.query.token, 'secret', function(err, decoded) {

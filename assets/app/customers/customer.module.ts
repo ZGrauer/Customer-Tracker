@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { CustomerComponent } from './customer.component';
 import { CustomerService } from './customer.service';
+import { ChartComponent } from '../chart/chart.component';
 import {
     InputTextModule,
     InputTextareaModule,
@@ -15,11 +16,12 @@ import {
     CalendarModule,
     GrowlModule,
     PanelModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    ChartModule
 } from 'primeng/primeng';
 
 @NgModule({
-    declarations: [CustomerComponent],
+    declarations: [CustomerComponent, ChartComponent],
     imports: [
         CommonModule,
         FormsModule,
@@ -34,7 +36,8 @@ import {
         CalendarModule,
         GrowlModule,
         PanelModule,
-        ConfirmDialogModule
+        ConfirmDialogModule,
+        ChartModule
     ],
     providers: [CustomerService]
 })
