@@ -12,7 +12,7 @@ export class CustomerService {
     customerIsEdited = new EventEmitter<Customer>();
     private customers: Customer[] = [];
 
-    constructor(private http: Http, private errorService:ErrorService) { }
+    constructor(private http: Http, private errorService: ErrorService) { }
 
     addCustomer(customer: Customer) {
         const body = JSON.stringify(customer);
@@ -48,9 +48,12 @@ export class CustomerService {
             });
     }
 
-    getCustomers() {
-        //return this.customers;
-        return this.http.get('customer')
+    getCustomers(showAllCustomers?: boolean) {
+        let getPath = 'customer';
+        if (!showAllCustomers) {
+            getPath += '/' + localStorage.getItem('userId');
+        }
+        return this.http.get(getPath)
             .map((response: Response) => {
                 const customers = response.json().obj;
                 let transformedCustomers: Customer[] = [];
@@ -81,7 +84,7 @@ export class CustomerService {
             });
     }
 
-    updateCustomer(customer:Customer) {
+    updateCustomer(customer: Customer) {
         const body = JSON.stringify(customer);
         const headers = new Headers({ 'Content-Type': 'application/json' });
         const token = localStorage.getItem('token')

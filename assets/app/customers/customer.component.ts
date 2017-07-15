@@ -30,6 +30,7 @@ export class CustomerComponent implements OnInit {
     customerform: FormGroup;
     statuses: SelectItem[] = [];
     msgs: Message[] = [];
+    showAllCustomers: boolean = true;
 
     constructor(
         private customerService: CustomerService,
@@ -82,7 +83,7 @@ export class CustomerComponent implements OnInit {
     }
 
     getCustomers() {
-        this.customerService.getCustomers()
+        this.customerService.getCustomers(this.showAllCustomers)
             .subscribe(
             (customers: Customer[]) => {
                 //console.log(customers);

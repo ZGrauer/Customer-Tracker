@@ -18,11 +18,13 @@
     <p-column field="updateUser" header="Last Update By" [sortable]="true"></p-column>
     <p-footer>
         <div class="ui-helper-clearfix" style="width:100%">
+            <p-toggleButton id="allCustomers" [(ngModel)]="showAllCustomers" (onChange)="getCustomers()" onLabel="Show All" offLabel="Show Mine"  onIcon="fa-filter" offIcon="fa-filter" [style]="{'width':'125px'}" *ngIf="isLoggedIn()"></p-toggleButton>
             <button type="button" pButton icon="fa-plus" style="float:left" (click)="showDialogToAdd()" label="Add" *ngIf="isAdmin()"></button>
             <button type="button" pButton icon="fa-file-o" iconPos="left" label="CSV" (click)="dt.exportCSV()"></button>
         </div>
     </p-footer>
 </p-dataTable>
+
 
 <p-confirmDialog></p-confirmDialog>
 <p-dialog header="Customer Details" [(visible)]="displayDialog" [responsive]="true" showEffect="fade" [modal]="true" width="600">

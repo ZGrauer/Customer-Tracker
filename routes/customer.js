@@ -24,6 +24,37 @@ router.get('/', function(req, res, next) {
         });
 });
 
+router.get('/:userId', function(req, res, next) {
+    User.findById(req.params.userId, function(err, user) {
+        if (err) {
+            return res.status(500).json({
+                title: 'Error',
+                error: err
+            });
+        }
+
+        console.log('User: ');
+        console.log(user);
+        Customer.find({
+                user: user
+            })
+            .populate('user updateUser')
+            .exec(function(err, customers) {
+                if (err) {
+                    return res.status(500).json({
+                        title: 'Error',
+                        error: err
+                    });
+                }
+                res.status(200).json({
+                    message: 'Success',
+                    obj: customers
+                });
+            });
+
+    });
+});
+
 router.use('/', function(req, res, next) {
     jwt.verify(req.query.token, 'secret', function(err, decoded) {
         if (err) {
