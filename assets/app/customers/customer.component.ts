@@ -1,6 +1,7 @@
 import { Component, ViewEncapsulation, OnInit } from '@angular/core';
 import { Validators, FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { Router } from "@angular/router";
+
 import { Customer } from "./customer.model";
 import { User } from "../auth/user.model";
 import { CustomerService } from './customer.service';
@@ -19,22 +20,23 @@ import { SelectItem, ConfirmationService, Message } from 'primeng/primeng';
 })
 
 export class CustomerComponent implements OnInit {
-    displayDialog: boolean;
-    selectedCustomer: Customer;
-    newCustomer: boolean;
-    customer: Customer;
-    customers: Customer[] = [];
-    users: User[] = [];
-    userSelection: SelectItem[] = [];
-    currentUserId: String;
-    customerform: FormGroup;
-    statuses: SelectItem[] = [];
-    msgs: Message[] = [];
-    showAllCustomers: boolean = true;
-    customerStatusChartData: any;
-    customerStatusChartOptions: any;
-    customerUserChartData: any;
-    customerUserChartOptions: any;
+    displayDialog: boolean;     // displays the add/edit customer modal
+    selectedCustomer: Customer; // The currently edited customer
+    newCustomer: boolean;       // Adding a new customer or editing existing in modal?
+    customer: Customer;         // new customer object for mongo
+    customers: Customer[] = []; // Array of all customers for datatable.  Also used for charts.
+    users: User[] = [];         // Array of all users from mongo.  used for dropdowns
+    userSelection: SelectItem[] = [];  // PrimeNG selection for IPM
+    currentUserId: String;      // The user's ID from mongo
+    customerform: FormGroup;    // Formgroup for the add/edit customer modal
+    statuses: SelectItem[] = [];    // All availble customer statues for the add/edit modal
+    msgs: Message[] = [];       // Messages to display using PrimeNG growl.  Error, success, etc.
+    showAllCustomers: boolean = true;   // Toggle button to show all or only user's customers
+    pieChartType: string = 'pie';   // Sent to chart component to determine Chart.js type
+    customerStatusChartData: any;   // Status summary chart data for Chart.js
+    customerStatusChartOptions: any;    // Status summary chart options for Chart.js
+    customerUserChartData: any;     // User count chart data
+    customerUserChartOptions: any;  // Chart options
 
     constructor(
         private customerService: CustomerService,
@@ -45,9 +47,54 @@ export class CustomerComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        //this.customers = this.customerService.getCustomers();
+        // Populates the customer array via the customer service
         this.getCustomers();
+        // Populates array of all users for dropdowns in add/edit modal
+        this.getUsers();
+        // Populates array of all customer statues for add/edit modal
+        this.getStatusValues();
+    }
 
+
+    /**
+     * showDialogToAdd - Displays the Add customer modal.  User must be Admin to add.
+     *
+     * @returns {void}
+     */
+    showDialogToAdd() {
+        if (this.isAdmin()) {
+            this.newCustomer = true;
+            this.customer = new Customer(null, '', '', '', '', new Date(), new Date(), '');
+            this.displayDialog = true;
+        }
+    }
+
+
+    /**
+     * getCustomers - Uses the Customer Service to get all customer objects from the database
+     *
+     * @returns {void}
+     */
+    getCustomers() {
+        this.customerService.getCustomers(this.showAllCustomers)
+
+            .subscribe(
+            (customers: Customer[]) => {
+                //console.log(customers);
+                this.customers = customers;
+                this.updateChart();
+            }
+            );
+    }
+
+
+
+    /**
+     * getUsers - Uses the Auth Service to get all user objects from the database
+     *
+     * @returns {void}
+     */
+    getUsers() {
         this.authService.getUsers()
             .subscribe(
             (users: User[]) => {
@@ -69,7 +116,15 @@ export class CustomerComponent implements OnInit {
             'updateDt': new FormControl(''),
             'updateUser': new FormControl({ disabled: true })
         });
+    }
 
+
+    /**
+     * getStatusValues - gets & sets all statues for customer records
+     *
+     * @returns {void}
+     */
+    getStatusValues() {
         this.statuses.push({ label: '0 - No contact', value: 'No contact' });
         this.statuses.push({ label: '1 - Engaged Team', value: 'Engaged Team' });
         this.statuses.push({ label: '2 - Design Complete', value: 'Design Complete' });
@@ -78,25 +133,12 @@ export class CustomerComponent implements OnInit {
         this.statuses.push({ label: 'Basic - No P28', value: 'Basic - No P28' });
     }
 
-    showDialogToAdd() {
-        if (this.isAdmin()) {
-            this.newCustomer = true;
-            this.customer = new Customer(null, '', '', '', '', new Date(), new Date(), '');
-            this.displayDialog = true;
-        }
-    }
 
-    getCustomers() {
-        this.customerService.getCustomers(this.showAllCustomers)
-            .subscribe(
-            (customers: Customer[]) => {
-                //console.log(customers);
-                this.customers = customers;
-                this.updateChart();
-            }
-            );
-    }
-
+    /**
+     * save - Saves new and updated customers to the database via the Customer Service
+     *
+     * @returns {void}
+     */
     save() {
         this.customer._updateUserId = this.authService.getUserId();
         if (this.newCustomer) {
@@ -126,8 +168,14 @@ export class CustomerComponent implements OnInit {
         this.displayDialog = false;
     }
 
+
+
+    /**
+     * delete - Deletes a customer record from the database
+     *
+     * @returns {void}
+     */
     delete() {
-        //this.customers.splice(this.findSelectedCustomerIndex(), 1);
         this.customerService.deleteCustomer(this.selectedCustomer)
             .subscribe(
             result => {
@@ -139,6 +187,16 @@ export class CustomerComponent implements OnInit {
         this.displayDialog = false;
     }
 
+
+
+    /**
+     * onRowSelect - sets the customer object to the current row.
+     *              Checks for user auth.
+     *              Then displays the edit modal
+     *
+     * @param  {type} event Data from selecting a row in the datatable
+     * @returns {void}
+     */
     onRowSelect(event) {
         this.newCustomer = false;
         this.customer = this.cloneCustomer(event.data);
@@ -148,6 +206,15 @@ export class CustomerComponent implements OnInit {
 
     }
 
+
+
+
+    /**
+     * cloneCustomer - Creates a new cloned customer object for editing
+     *
+     * @param  {Customer} c Customer object to clone
+     * @returns {Customer} new Customer object that matches the param
+     */
     cloneCustomer(c: Customer): Customer {
         let customer = new Customer(0, '', '', '', '', new Date(), new Date(), '');
         for (let prop in c) {
@@ -156,23 +223,49 @@ export class CustomerComponent implements OnInit {
         return customer;
     }
 
+    /**
+     * cloneCustomer - Returns the index for the currently selected customer in the customers array
+     *
+     * @returns {number} the index in the array for the selected customer
+     */
     findSelectedCustomerIndex(): number {
         return this.customers.indexOf(this.selectedCustomer);
-
     }
 
-    belongsToUser() {
+    /**
+     * belongsToUser - returns true or false if the current selected customer
+     *                  belongs to the logged in user, or if the user is an Admin
+     *
+     * @returns {boolean}
+     */
+    belongsToUser(): boolean {
         return (this.authService.getUserId() == this.customer._userId) || this.authService.isAdmin();
     }
 
-    isLoggedIn() {
+    /**
+     * isLoggedIn -  returns true or false if the current user has a token and not deleted in the database
+     *
+     * @returns {boolean}
+     */
+    isLoggedIn(): boolean {
         return localStorage.getItem('token') !== null && !this.authService.isDeleted();
     }
 
-    isAdmin() {
+    /**
+     * isAdmin -  returns true or false if the current user is an admin
+     *
+     * @returns {boolean}
+     */
+    isAdmin(): boolean {
         return this.authService.isAdmin();
     }
 
+
+    /**
+     * confirm - Displays a PrimeNG confirmation box for deletes
+     *
+     * @returns {void}
+     */
     confirm() {
         this.displayDialog = false;
         this.confirmationService.confirm({
@@ -188,6 +281,12 @@ export class CustomerComponent implements OnInit {
         });
     }
 
+
+    /**
+     * updateChart - Sets the Chart.js data and labels based on the customers array.
+     *
+     * @returns {void}
+     */
     updateChart() {
         let statusLabels: String[] = this.getChartLabels('status');
         let statusCounts: number[] = this.getChartData(statusLabels, 'status');
@@ -228,7 +327,7 @@ export class CustomerComponent implements OnInit {
 
         if (this.isAdmin()) {
             let userLabels: String[] = this.getChartLabels('user');
-            let userCounts: number[] = this.getChartData(statusLabels, 'user');
+            let userCounts: number[] = this.getChartData(userLabels, 'user');
             //console.log(userLabels);
             //console.log(userCounts);
             this.customerUserChartOptions = {
@@ -259,6 +358,13 @@ export class CustomerComponent implements OnInit {
     }
 
 
+    /**
+     * getChartLabels - Returns an array of Strings that represent the labels for Chart.js.
+     *                  Pass in the name of a property of the customer object.
+     *
+     * @param  {string} customerProperty string property name of a customer object
+     * @returns {String[]} Array of distinct strings for a property of the customer array.  Used as labels in Chart.js
+     */
     getChartLabels(customerProperty: string): String[] {
         let labels: String[] = [];
         for (let i = 0; i < this.customers.length; i++) {
@@ -276,7 +382,14 @@ export class CustomerComponent implements OnInit {
         return labels;
     }
 
-
+    /**
+     * getChartLabels - Returns an array of numbers that represent the count of each label in the customer array.
+     *                  Used as data for Chart.js.
+     *
+     * @param  {String[]} labels  Array of distinct strings for a property of the customer array.
+     * @param  {string} customerProperty  The property in a customer to count for each label.
+     * @returns {number[]} Array of numbers/counts for input label values.  Used as data in Chart.js
+     */
     getChartData(labels: String[], customerProperty: string): number[] {
         let counts: number[] = [];
         for (let i = 0; i < labels.length; i++) {

@@ -29,10 +29,10 @@
 <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
     <div class="ui-grid-row">
         <div class="ui-grid-col-4">
-            <app-chart [options]="customerStatusChartOptions" [data]="customerStatusChartData"></app-chart>
+            <app-chart [type]="pieChartType" [options]="customerStatusChartOptions" [data]="customerStatusChartData"></app-chart>
         </div>
         <div class="ui-grid-col-4">
-            <app-chart *ngIf="isAdmin()" [options]="customerUserChartOptions" [data]="customerUserChartData"></app-chart>
+            <app-chart *ngIf="isAdmin()" [type]="pieChartType" [options]="customerUserChartOptions" [data]="customerUserChartData"></app-chart>
         </div>
     </div>
 </div>
