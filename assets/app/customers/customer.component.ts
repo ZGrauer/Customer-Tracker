@@ -32,7 +32,7 @@ export class CustomerComponent implements OnInit {
     msgs: Message[] = [];
     showAllCustomers: boolean = true;
     customerStatusChartData: any;
-    customerStatusChartTitle: string;
+    customerStatusChartOptions: any;
 
     constructor(
         private customerService: CustomerService,
@@ -102,6 +102,7 @@ export class CustomerComponent implements OnInit {
                 .subscribe(
                 data => {
                     console.log(data);
+                    this.updateChart();
                     this.router.navigateByUrl('/');
                 },
                 error => console.log(error)
@@ -112,6 +113,7 @@ export class CustomerComponent implements OnInit {
                 .subscribe(
                 result => {
                     console.log(result);
+                    this.updateChart();
                     this.router.navigateByUrl('/');
                 },
                 error => console.log(error)
@@ -126,7 +128,10 @@ export class CustomerComponent implements OnInit {
         //this.customers.splice(this.findSelectedCustomerIndex(), 1);
         this.customerService.deleteCustomer(this.selectedCustomer)
             .subscribe(
-            result => console.log(result)
+            result => {
+                console.log(result);
+                this.updateChart();
+            }
             );
         this.customer = null;
         this.displayDialog = false;
@@ -187,7 +192,21 @@ export class CustomerComponent implements OnInit {
 
         //console.log(labels);
         //console.log(counts);
-        this.customerStatusChartTitle = 'Build Status Counts';
+        this.customerStatusChartOptions = {
+            title: {
+                display: true,
+                text: 'Build Status Counts',
+                fontSize: 22
+            },
+            legend: {
+                labels: {
+                    fontSize: 16
+                }
+            },
+            tooltips: {
+                bodyFontSize: 14
+            }
+        };
         this.customerStatusChartData = {
             labels: labels,
             datasets: [
@@ -211,7 +230,7 @@ export class CustomerComponent implements OnInit {
         };
     }
 
-    getStatusChartLabels():String[] {
+    getStatusChartLabels(): String[] {
         let labels: String[] = [];
         for (let i = 0; i < this.customers.length; i++) {
             let foundmatch: boolean = false;
@@ -228,7 +247,7 @@ export class CustomerComponent implements OnInit {
         return labels;
     }
 
-    getStatusChartData(labels: String[]):number[] {
+    getStatusChartData(labels: String[]): number[] {
         let counts: number[] = [];
         for (let i = 0; i < labels.length; i++) {
             counts.push(0);

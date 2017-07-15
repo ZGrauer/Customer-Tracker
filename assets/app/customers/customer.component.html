@@ -18,7 +18,7 @@
     <p-column field="updateUser" header="Last Update By" [sortable]="true"></p-column>
     <p-footer>
         <div class="ui-helper-clearfix" style="width:100%">
-            <p-toggleButton id="allCustomers" [(ngModel)]="showAllCustomers" (onChange)="getCustomers()" onLabel="Show All" offLabel="Show Mine" onIcon="fa-filter" offIcon="fa-filter" [style]="{'width':'125px'}" *ngIf="isLoggedIn()"></p-toggleButton>
+            <p-toggleButton id="allCustomers" [(ngModel)]="showAllCustomers" (onChange)="getCustomers()" onLabel="Show Mine" offLabel="Show All" onIcon="fa-filter" offIcon="fa-filter" [style]="{'width':'125px'}" *ngIf="isLoggedIn()"></p-toggleButton>
             <button type="button" pButton icon="fa-plus" style="float:left" (click)="showDialogToAdd()" label="Add" *ngIf="isAdmin()"></button>
             <button type="button" pButton icon="fa-file-o" iconPos="left" label="CSV" (click)="dt.exportCSV()"></button>
         </div>
@@ -28,8 +28,8 @@
 
 <div class="ui-grid ui-grid-responsive ui-fluid ui-grid-pad">
     <div class="ui-grid-row">
-        <div class="ui-grid-col-3">
-            <app-chart [title]="customerStatusChartTitle" [data]="customerStatusChartData"></app-chart>
+        <div class="ui-grid-col-4">
+            <app-chart [options]="customerStatusChartOptions" [data]="customerStatusChartData"></app-chart>
         </div>
 
     </div>

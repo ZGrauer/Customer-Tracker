@@ -8,12 +8,12 @@ import { ChartModule } from 'primeng/primeng';
     selector: 'app-chart',
     template: `
         <h3>{{title}}</h3>
-        <p-chart type="pie" [data]="data"></p-chart>
+        <p-chart type="pie" [options]="options" [data]="data"></p-chart>
     `
 })
 
 export class ChartComponent {
     @Input() data: any;
-    @Input() title: string;
+    @Input() options: any;
 
 }
