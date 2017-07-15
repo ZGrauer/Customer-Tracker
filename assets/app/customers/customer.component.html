@@ -31,7 +31,9 @@
         <div class="ui-grid-col-4">
             <app-chart [options]="customerStatusChartOptions" [data]="customerStatusChartData"></app-chart>
         </div>
-
+        <div class="ui-grid-col-4">
+            <app-chart *ngIf="isAdmin()" [options]="customerUserChartOptions" [data]="customerUserChartData"></app-chart>
+        </div>
     </div>
 </div>
 

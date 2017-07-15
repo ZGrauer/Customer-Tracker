@@ -33,6 +33,8 @@ export class CustomerComponent implements OnInit {
     showAllCustomers: boolean = true;
     customerStatusChartData: any;
     customerStatusChartOptions: any;
+    customerUserChartData: any;
+    customerUserChartOptions: any;
 
     constructor(
         private customerService: CustomerService,
@@ -187,11 +189,18 @@ export class CustomerComponent implements OnInit {
     }
 
     updateChart() {
-        let labels: String[] = this.getStatusChartLabels();
-        let counts: number[] = this.getStatusChartData(labels);
+        let statusLabels: String[] = this.getChartLabels('status');
+        let statusCounts: number[] = this.getChartData(statusLabels, 'status');
+        let colors: string[] = [
+            '#ff6384',
+            '#36a2eb',
+            '#ffce56',
+            '#4bc0c0',
+            '#ff9f40'
+        ];
 
-        //console.log(labels);
-        //console.log(counts);
+        //console.log(statusLabels);
+        //console.log(statusCounts);
         this.customerStatusChartOptions = {
             title: {
                 display: true,
@@ -208,51 +217,72 @@ export class CustomerComponent implements OnInit {
             }
         };
         this.customerStatusChartData = {
-            labels: labels,
+            labels: statusLabels,
             datasets: [
                 {
-                    data: counts,
-                    backgroundColor: [
-                        '#ff6384',
-                        '#36a2eb',
-                        '#ffce56',
-                        '#4bc0c0',
-                        '#ff9f40'
-                    ],
-                    hoverBackgroundColor: [
-                        '#FF6384',
-                        '#36A2EB',
-                        '#FFCE56',
-                        '#4bc0c0',
-                        '#ff9f40'
-                    ]
+                    data: statusCounts,
+                    backgroundColor: colors,
+                    hoverBackgroundColor: colors
                 }]
         };
+
+        if (this.isAdmin()) {
+            let userLabels: String[] = this.getChartLabels('user');
+            let userCounts: number[] = this.getChartData(statusLabels, 'user');
+            //console.log(userLabels);
+            //console.log(userCounts);
+            this.customerUserChartOptions = {
+                title: {
+                    display: true,
+                    text: 'Customer Count By IPM',
+                    fontSize: 22
+                },
+                legend: {
+                    labels: {
+                        fontSize: 16
+                    }
+                },
+                tooltips: {
+                    bodyFontSize: 14
+                }
+            };
+            this.customerUserChartData = {
+                labels: userLabels,
+                datasets: [
+                    {
+                        data: userCounts,
+                        backgroundColor: colors,
+                        hoverBackgroundColor: colors
+                    }]
+            };
+        }
     }
 
-    getStatusChartLabels(): String[] {
+
+    getChartLabels(customerProperty: string): String[] {
         let labels: String[] = [];
         for (let i = 0; i < this.customers.length; i++) {
             let foundmatch: boolean = false;
             for (let j = 0; j < labels.length; j++) {
-                if (labels[j] == this.customers[i].status) {
+                if (labels[j] == this.customers[i][customerProperty]) {
                     foundmatch = true;
                     break;
                 }
             }
             if (!foundmatch) {
-                labels.push(this.customers[i].status);
+                labels.push(this.customers[i][customerProperty]);
             }
         }
         return labels;
     }
 
-    getStatusChartData(labels: String[]): number[] {
+
+    getChartData(labels: String[], customerProperty: string): number[] {
         let counts: number[] = [];
         for (let i = 0; i < labels.length; i++) {
             counts.push(0);
             for (let j = 0; j < this.customers.length; j++) {
-                if (labels[i] == this.customers[j].status) {
+                if (labels[i] == this.customers[j][customerProperty]) {
                     counts[i]++;
                 }
             }
