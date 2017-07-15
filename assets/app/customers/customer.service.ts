@@ -1,8 +1,10 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { Http, Response, Headers } from '@angular/http';
+
 import 'rxjs/Rx';
 import { Observable } from 'rxjs/Rx';
 import * as moment from 'moment';
+
 import { Customer } from './customer.model';
 import { ErrorService } from '../error/error.service';
 
@@ -14,6 +16,13 @@ export class CustomerService {
 
     constructor(private http: Http, private errorService: ErrorService) { }
 
+
+    /**
+     * addCustomer - Posts a new customer to the server and database
+     *
+     * @param  {Customer} customer: Customer The Customer object to add in mongoDB
+     * @returns {Observable} Observable Response from the server. Success or Error to be displayed in Growl
+     */
     addCustomer(customer: Customer) {
         const body = JSON.stringify(customer);
         const headers = new Headers({ 'Content-Type': 'application/json' });
@@ -48,6 +57,13 @@ export class CustomerService {
             });
     }
 
+
+    /**
+     * getCustomers - Gets an array of Customer objects from the server
+     *
+     * @param  {boolean} showAllCustomers?: boolean if true, then only get logged in user's customers
+     * @returns {Observable} Observable Response from the server. Success or Error to be displayed in Growl
+     */
     getCustomers(showAllCustomers?: boolean) {
         let getPath = 'customer';
         if (!showAllCustomers) {
@@ -85,6 +101,12 @@ export class CustomerService {
     }
 
 
+    /**
+     * updateCustomer - Patches/Updates a user object on the server/DB
+     *
+     * @param  {Customer} customer: Customer Updated customer object
+     * @returns {Observable} Observable Response from the server. Success or Error to be displayed in Growl
+     */
     updateCustomer(customer: Customer) {
         const body = JSON.stringify(customer);
         const headers = new Headers({ 'Content-Type': 'application/json' });
@@ -105,6 +127,13 @@ export class CustomerService {
             });
     }
 
+
+    /**
+     * deleteCustomer - description
+     *
+     * @param  {type} customer: Customer description
+     * @returns {type}                    description
+     */
     deleteCustomer(customer: Customer) {
         this.customers.splice(this.customers.indexOf(customer), 1);
         const token = localStorage.getItem('token')
