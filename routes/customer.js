@@ -1,12 +1,19 @@
 var express = require('express');
 var router = express.Router();
-
+var jwt = require('jsonwebtoken');
 var Customer = require('../models/customer');
 var User = require('../models/user');
-var jwt = require('jsonwebtoken');
 
 
-
+/**
+ * router.get '/' - returns all customer objects in the mongoDB
+ *
+ * @param  {type} '/' path for request. Is equalto /customer/
+ * @param  {object} req req object represents the HTTP request and has properties for the request query string, parameters, body, HTTP headers, and so on.
+ * @param  {object} res res object represents the HTTP response that an Express app sends when it gets an HTTP request
+ * @param  {object} next Even if you don’t need to use the next object, you must specify it to maintain the signature. Otherwise, the next object will be interpreted as regular middleware and will fail to handle errors.
+ * @returns {object} json object with title and message indicating success or error
+ */
 router.get('/', function(req, res, next) {
     Customer.find()
         .populate('user updateUser')
@@ -25,6 +32,16 @@ router.get('/', function(req, res, next) {
 });
 
 
+/**
+ * router.get '/:userId' - returns all customer objects in the mongoDB for the specified userId.
+ *                         :userId = param equaling the user's id in the mongoDB
+ *
+ * @param  {type} '/:userId' path for request. Is equalto /customer/:userId
+ * @param  {object} req req object represents the HTTP request and has properties for the request query string, parameters, body, HTTP headers, and so on.
+ * @param  {object} res res object represents the HTTP response that an Express app sends when it gets an HTTP request
+ * @param  {object} next Even if you don’t need to use the next object, you must specify it to maintain the signature. Otherwise, the next object will be interpreted as regular middleware and will fail to handle errors.
+ * @returns {object} json object with title and message indicating success or error
+ */
 router.get('/:userId', function(req, res, next) {
     User.findById(req.params.userId, function(err, user) {
         if (err) {
@@ -57,6 +74,15 @@ router.get('/:userId', function(req, res, next) {
 });
 
 
+/**
+ * router.use '/' - Ensures all functions beyond this point are only done by authenticated users
+ *
+ * @param  {type} '/' path for request. Is equalto /customer/
+ * @param  {object} req req object represents the HTTP request and has properties for the request query string, parameters, body, HTTP headers, and so on.
+ * @param  {object} res res object represents the HTTP response that an Express app sends when it gets an HTTP request
+ * @param  {object} next Even if you don’t need to use the next object, you must specify it to maintain the signature. Otherwise, the next object will be interpreted as regular middleware and will fail to handle errors.
+ * @returns {object} json object with title and message indicating success or error
+ */
 router.use('/', function(req, res, next) {
     jwt.verify(req.query.token, 'secret', function(err, decoded) {
         if (err) {
@@ -69,6 +95,15 @@ router.use('/', function(req, res, next) {
     })
 });
 
+/**
+ * router.post '/' - Adds a new customer to the database.  User must have valied JWT.
+ *
+ * @param  {type} '/' path for request. Is equalto /customer/
+ * @param  {object} req req object represents the HTTP request and has properties for the request query string, parameters, body, HTTP headers, and so on.
+ * @param  {object} res res object represents the HTTP response that an Express app sends when it gets an HTTP request
+ * @param  {object} next Even if you don’t need to use the next object, you must specify it to maintain the signature. Otherwise, the next object will be interpreted as regular middleware and will fail to handle errors.
+ * @returns {object} json object with title and message indicating success or error
+ */
 router.post('/', function(req, res, next) {
     var decoded = jwt.decode(req.query.token);
     //console.log('Decoded JWT: ');
@@ -137,6 +172,18 @@ router.post('/', function(req, res, next) {
     });
 });
 
+
+/**
+ * router.patch '/:id' - Updates an existing customer to the database.
+ *                       User must have valied JWT. Own the customer or be an Admin
+ *                       :id = param equaling the customer id in the mongoDB
+ *
+ * @param  {type} '/' path for request. Is equalto /customer/:id
+ * @param  {object} req req object represents the HTTP request and has properties for the request query string, parameters, body, HTTP headers, and so on.
+ * @param  {object} res res object represents the HTTP response that an Express app sends when it gets an HTTP request
+ * @param  {object} next Even if you don’t need to use the next object, you must specify it to maintain the signature. Otherwise, the next object will be interpreted as regular middleware and will fail to handle errors.
+ * @returns {object} json object with title and message indicating success or error
+ */
 router.patch('/:id', function(req, res, next) {
     var decoded = jwt.decode(req.query.token);
     Customer.findById(req.params.id, function(err, customer) {
@@ -191,6 +238,18 @@ router.patch('/:id', function(req, res, next) {
     });
 });
 
+
+/**
+ * router.delete '/:_id' - Deletes an existing customer from the database.
+ *                         User must have valied JWT and be an Admin
+ *                         :_id = param equaling the customer id in the mongoDB
+ *
+ * @param  {type} '/' path for request. Is equalto /customer/
+ * @param  {object} req req object represents the HTTP request and has properties for the request query string, parameters, body, HTTP headers, and so on.
+ * @param  {object} res res object represents the HTTP response that an Express app sends when it gets an HTTP request
+ * @param  {object} next Even if you don’t need to use the next object, you must specify it to maintain the signature. Otherwise, the next object will be interpreted as regular middleware and will fail to handle errors.
+ * @returns {object} json object with title and message indicating success or error
+ */
 router.delete('/:_id', function(req, res, next) {
     var decoded = jwt.decode(req.query.token);
     Customer.findById(req.params._id, function(err, customer) {

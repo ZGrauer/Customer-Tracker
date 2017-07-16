@@ -2,10 +2,18 @@ var express = require('express');
 var router = express.Router();
 var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
-
 var User = require('../models/user');
 
 
+/**
+ * router.get '/' - returns all user objects in the mongoDB
+ *
+ * @param  {type} '/' path for request. Is equalto /user/
+ * @param  {object} req req object represents the HTTP request and has properties for the request query string, parameters, body, HTTP headers, and so on.
+ * @param  {object} res res object represents the HTTP response that an Express app sends when it gets an HTTP request
+ * @param  {object} next Even if you don’t need to use the next object, you must specify it to maintain the signature. Otherwise, the next object will be interpreted as regular middleware and will fail to handle errors.
+ * @returns {object} json object with title and message indicating success or error
+ */
 router.get('/', function(req, res, next) {
     User.find()
         .exec(function(err, users) {
@@ -23,6 +31,16 @@ router.get('/', function(req, res, next) {
         });
 });
 
+
+/**
+ * router.post '/' - add a new user object in the mongoDB
+ *
+ * @param  {type} '/' path for request. Is equalto /user/
+ * @param  {object} req req object represents the HTTP request and has properties for the request query string, parameters, body, HTTP headers, and so on.
+ * @param  {object} res res object represents the HTTP response that an Express app sends when it gets an HTTP request
+ * @param  {object} next Even if you don’t need to use the next object, you must specify it to maintain the signature. Otherwise, the next object will be interpreted as regular middleware and will fail to handle errors.
+ * @returns {object} json object with title and message indicating success or error
+ */
 router.post('/', function(req, res, next) {
     var user = new User({
         firstName: req.body.firstName,
@@ -51,6 +69,15 @@ router.post('/', function(req, res, next) {
 });
 
 
+/**
+ * router.patch '/changePassword' - changes the logged in user's password in the mongoDB
+ *
+ * @param  {type} '/' path for request. Is equalto /user/changePassword
+ * @param  {object} req req object represents the HTTP request and has properties for the request query string, parameters, body, HTTP headers, and so on.
+ * @param  {object} res res object represents the HTTP response that an Express app sends when it gets an HTTP request
+ * @param  {object} next Even if you don’t need to use the next object, you must specify it to maintain the signature. Otherwise, the next object will be interpreted as regular middleware and will fail to handle errors.
+ * @returns {object} json object with title and message indicating success or error
+ */
 router.patch('/changePassword', function(req, res, next) {
     //console.log(req.body);
     User.findById(req.body._userId, function(err, user) {
@@ -99,6 +126,17 @@ router.patch('/changePassword', function(req, res, next) {
     });
 });
 
+
+/**
+ * router.patch '/:id' - updates the user identified by :id in the mongoDB.
+ *                         :id = param equaling the user's id in the mongoDB
+ *
+ * @param  {type} '/' path for request. Is equalto /user/:id
+ * @param  {object} req req object represents the HTTP request and has properties for the request query string, parameters, body, HTTP headers, and so on.
+ * @param  {object} res res object represents the HTTP response that an Express app sends when it gets an HTTP request
+ * @param  {object} next Even if you don’t need to use the next object, you must specify it to maintain the signature. Otherwise, the next object will be interpreted as regular middleware and will fail to handle errors.
+ * @returns {object} json object with title and message indicating success or error
+ */
 router.patch('/:id', function(req, res, next) {
     //console.log('Server is updating User...');
     var decoded = jwt.decode(req.query.token);
@@ -153,6 +191,16 @@ router.patch('/:id', function(req, res, next) {
 });
 
 
+/**
+ * router.delete '/:_id' - deletes the user identified by :id in the mongoDB.
+ *                         :_id = param equaling the user's id in the mongoDB
+ *
+ * @param  {type} '/' path for request. Is equalto /user/:_id
+ * @param  {object} req req object represents the HTTP request and has properties for the request query string, parameters, body, HTTP headers, and so on.
+ * @param  {object} res res object represents the HTTP response that an Express app sends when it gets an HTTP request
+ * @param  {object} next Even if you don’t need to use the next object, you must specify it to maintain the signature. Otherwise, the next object will be interpreted as regular middleware and will fail to handle errors.
+ * @returns {object} json object with title and message indicating success or error
+ */
 router.delete('/:_id', function(req, res, next) {
     var decoded = jwt.decode(req.query.token);
     User.findById(req.params._id, function(err, user) {
@@ -196,7 +244,15 @@ router.delete('/:_id', function(req, res, next) {
     });
 });
 
-
+/**
+ * router.post '/signin' - Authenticates the user and logs in. Creates & returns a JWT in local storage
+ *
+ * @param  {type} '/' path for request. Is equalto /user/signin
+ * @param  {object} req req object represents the HTTP request and has properties for the request query string, parameters, body, HTTP headers, and so on.
+ * @param  {object} res res object represents the HTTP response that an Express app sends when it gets an HTTP request
+ * @param  {object} next Even if you don’t need to use the next object, you must specify it to maintain the signature. Otherwise, the next object will be interpreted as regular middleware and will fail to handle errors.
+ * @returns {object} json object with title and message indicating success or error.  Contains JWT
+ */
 router.post('/signin', function(req, res, next) {
     User.findOne({
         email: req.body.email
