@@ -85,9 +85,9 @@ $ npm run build:prod
 ```
 
 ## <a name="todo"></a>TODO
-* Add charts using PrimeNG to summarize customer data
-* Add ability to bulk load customer data
-* Add test cases
+- [X] Add charts using PrimeNG to summarize customer data
+- [ ] Add ability to bulk load customer data. Currently use mongo.
+- [ ] Add test cases
 
 ## <a name="maintainers"></a>Maintainers
 
