@@ -23,9 +23,12 @@ export class AuthService {
     addUser(user: User) {
         user.email = user.email.toLowerCase();
         this.users.push(user);
+        const token = localStorage.getItem('token')
+            ? '?token=' + localStorage.getItem('token')
+            : '';
         const body = JSON.stringify(user);
         const headers = new Headers({ 'Content-Type': 'application/json' });
-        return this.http.post('user', body, { headers: headers })
+        return this.http.post('user' + token, body, { headers: headers })
             .map((response: Response) => {
                 console.log(response.json());
                 this.errorService.handleError(response.json());
