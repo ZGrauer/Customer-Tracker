@@ -13,8 +13,8 @@ import { Message } from 'primeng/primeng';
     templateUrl: './changePassword.component.html'
 })
 export class ChangePasswordComponent implements OnInit {
-    oldPassword: String;
-    newPassword: String;
+    oldPassword: string;
+    newPassword: string;
     passwordform: FormGroup;
     msgs: Message[] = [];
 

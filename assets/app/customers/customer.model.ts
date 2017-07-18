@@ -1,15 +1,15 @@
 export class Customer {
     constructor(
                 public h1: Number,
-                public name: String,
-                public status: String,
-                public note: String,
-                public user: String,
+                public name: string,
+                public status: string,
+                public note: string,
+                public user: string,
                 public initialDt: Date,
                 public updateDt: Date,
-                public updateUser: String,
-                public _id?:String,
-                public _userId?:String,
-                public _updateUserId?:String
+                public updateUser: string,
+                public _id?:string,
+                public _userId?:string,
+                public _updateUserId?:string
             ) {}
 }

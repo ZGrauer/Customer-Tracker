@@ -27,7 +27,7 @@ export class CustomerComponent implements OnInit {
     customers: Customer[] = []; // Array of all customers for datatable.  Also used for charts.
     users: User[] = [];         // Array of all users from mongo.  used for dropdowns
     userSelection: SelectItem[] = [];  // PrimeNG selection for IPM
-    currentUserId: String;      // The user's ID from mongo
+    currentUserId: string;      // The user's ID from mongo
     customerform: FormGroup;    // Formgroup for the add/edit customer modal
     statuses: SelectItem[] = [];    // All availble customer statues for the add/edit modal
     msgs: Message[] = [];       // Messages to display using PrimeNG growl.  Error, success, etc.
@@ -288,7 +288,7 @@ export class CustomerComponent implements OnInit {
      * @returns {void}
      */
     updateChart() {
-        let statusLabels: String[] = this.getChartLabels('status');
+        let statusLabels: string[] = this.getChartLabels('status');
         let statusCounts: number[] = this.getChartData(statusLabels, 'status');
         let colors: string[] = [
             '#ff6384',
@@ -326,7 +326,7 @@ export class CustomerComponent implements OnInit {
         };
 
         if (this.isAdmin()) {
-            let userLabels: String[] = this.getChartLabels('user');
+            let userLabels: string[] = this.getChartLabels('user');
             let userCounts: number[] = this.getChartData(userLabels, 'user');
             //console.log(userLabels);
             //console.log(userCounts);
@@ -363,10 +363,10 @@ export class CustomerComponent implements OnInit {
      *                  Pass in the name of a property of the customer object.
      *
      * @param  {string} customerProperty string property name of a customer object
-     * @returns {String[]} Array of distinct strings for a property of the customer array.  Used as labels in Chart.js
+     * @returns {string[]} Array of distinct strings for a property of the customer array.  Used as labels in Chart.js
      */
-    getChartLabels(customerProperty: string): String[] {
-        let labels: String[] = [];
+    getChartLabels(customerProperty: string): string[] {
+        let labels: string[] = [];
         for (let i = 0; i < this.customers.length; i++) {
             let foundmatch: boolean = false;
             for (let j = 0; j < labels.length; j++) {
@@ -386,11 +386,11 @@ export class CustomerComponent implements OnInit {
      * getChartLabels - Returns an array of numbers that represent the count of each label in the customer array.
      *                  Used as data for Chart.js.
      *
-     * @param  {String[]} labels  Array of distinct strings for a property of the customer array.
+     * @param  {string[]} labels  Array of distinct strings for a property of the customer array.
      * @param  {string} customerProperty  The property in a customer to count for each label.
      * @returns {number[]} Array of numbers/counts for input label values.  Used as data in Chart.js
      */
-    getChartData(labels: String[], customerProperty: string): number[] {
+    getChartData(labels: string[], customerProperty: string): number[] {
         let counts: number[] = [];
         for (let i = 0; i < labels.length; i++) {
             counts.push(0);

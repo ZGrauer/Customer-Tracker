@@ -80,9 +80,9 @@ export class AuthService {
     /**
      * getUserId - returns the current users database ID
      *
-     * @returns {String} the mongo object ID of the logged in user
+     * @returns {string} the mongo object ID of the logged in user
      */
-    getUserId(): String {
+    getUserId(): string {
         return localStorage.getItem('userId');
     }
 
@@ -116,11 +116,11 @@ export class AuthService {
      * updatePassword - Updates the current user's password in the database.
      *                  Password is verified & encryped on the server
      *
-     * @param  {String} oldPassword: String description
-     * @param  {String} newPassword: String description
+     * @param  {string} oldPassword: string description
+     * @param  {string} newPassword: string description
      * @returns {Observable} Observable response from the server. Success or Error to be displayed in Growl
      */
-    updatePassword(oldPassword: String, newPassword: String) {
+    updatePassword(oldPassword: string, newPassword: string) {
         const body = JSON.stringify({
             _userId: localStorage.getItem('userId'),
             oldPassword: oldPassword,
@@ -174,11 +174,11 @@ export class AuthService {
     /**
      * signin - Logs a user in.  Server creates a jsonwebtoken for 8 hours
      *
-     * @param  {String} email: String    Email address of user
-     * @param  {String} password: plain text user password
+     * @param  {string} email: string    Email address of user
+     * @param  {string} password: plain text user password
      * @returns {Observable} Observable response from the server. Success or Error to be displayed in Growl
      */
-    signin(email: String, password: String) {
+    signin(email: string, password: string) {
         email = email.toLowerCase();
         const body = JSON.stringify({ email: email, password: password });
         const headers = new Headers({ 'Content-Type': 'application/json' });
