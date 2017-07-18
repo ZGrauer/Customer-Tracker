@@ -21,6 +21,7 @@ export class AuthService {
      * @returns {Observable} Observable response from the server. Success or Error to be displayed in Growl
      */
     addUser(user: User) {
+        user.email = user.email.toLowerCase();
         this.users.push(user);
         const body = JSON.stringify(user);
         const headers = new Headers({ 'Content-Type': 'application/json' });
@@ -147,6 +148,7 @@ export class AuthService {
      * @returns {Observable} Observable response from the server. Success or Error to be displayed in Growl
      */
     updateUser(user: User) {
+        user.email = user.email.toLowerCase();
         const body = JSON.stringify(user);
         const headers = new Headers({ 'Content-Type': 'application/json' });
         const token = localStorage.getItem('token')
@@ -174,6 +176,7 @@ export class AuthService {
      * @returns {Observable} Observable response from the server. Success or Error to be displayed in Growl
      */
     signin(email: String, password: String) {
+        email = email.toLowerCase();
         const body = JSON.stringify({ email: email, password: password });
         const headers = new Headers({ 'Content-Type': 'application/json' });
         return this.http.post('user/signin', body, { headers: headers })
