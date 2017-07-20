@@ -27,12 +27,14 @@ export class CustomerComponent implements OnInit {
     customers: Customer[] = []; // Array of all customers for datatable.  Also used for charts.
     users: User[] = [];         // Array of all users from mongo.  used for dropdowns
     userSelection: SelectItem[] = [];  // PrimeNG selection for IPM
-    currentUserId: String;      // The user's ID from mongo
+    userSelectionAll: SelectItem[] = [];  // PrimeNG selection for all users
+    currentUserId: string;      // The user's ID from mongo
     customerform: FormGroup;    // Formgroup for the add/edit customer modal
     statuses: SelectItem[] = [];    // All availble customer statues for the add/edit modal
     msgs: Message[] = [];       // Messages to display using PrimeNG growl.  Error, success, etc.
     showAllCustomers: boolean = true;   // Toggle button to show all or only user's customers
     pieChartType: string = 'pie';   // Sent to chart component to determine Chart.js type
+    barChartType: string = 'bar';   // Sent to chart component to determine Chart.js type
     customerStatusChartData: any;   // Status summary chart data for Chart.js
     customerStatusChartOptions: any;    // Status summary chart options for Chart.js
     customerUserChartData: any;     // User count chart data
@@ -53,6 +55,16 @@ export class CustomerComponent implements OnInit {
         this.getUsers();
         // Populates array of all customer statues for add/edit modal
         this.getStatusValues();
+        this.customerform = this.fb.group({
+            'h1': new FormControl('', Validators.compose([Validators.required, Validators.minLength(9), Validators.maxLength(9)])),
+            'name': new FormControl('', Validators.required),
+            'status': new FormControl('', Validators.required),
+            'note': new FormControl(''),
+            'ipm': new FormControl('', Validators.required),
+            'initialDt': new FormControl(''),
+            'updateDt': new FormControl(''),
+            'updateUser': new FormControl({ disabled: true })
+        });
     }
 
 
@@ -90,7 +102,9 @@ export class CustomerComponent implements OnInit {
 
 
     /**
-     * getUsers - Uses the Auth Service to get all user objects from the database
+     * getUsers - Uses the Auth Service to get all user objects from the database.
+     *            Creates an object for all users, and another for non-admins
+     *            The array of objects is used by the PrimeNG dropdowns 
      *
      * @returns {void}
      */
@@ -101,21 +115,14 @@ export class CustomerComponent implements OnInit {
                 this.users = users;
                 this.userSelection.push({ label: 'Select IPM', value: null });
                 this.users.forEach(u => {
-                    this.userSelection.push({ label: u.firstName + ' ' + u.lastName, value: u._id });
+                    this.userSelectionAll.push({ label: u.firstName + ' ' + u.lastName, value: u._id });
+                    if (!u.admin) {
+                        this.userSelection.push({ label: u.firstName + ' ' + u.lastName, value: u._id });
+                    }
                 });
             }
             );
         this.currentUserId = this.authService.getUserId();
-        this.customerform = this.fb.group({
-            'h1': new FormControl('', Validators.compose([Validators.required, Validators.minLength(9), Validators.maxLength(9)])),
-            'name': new FormControl('', Validators.required),
-            'status': new FormControl('', Validators.required),
-            'note': new FormControl(''),
-            'ipm': new FormControl('', Validators.required),
-            'initialDt': new FormControl(''),
-            'updateDt': new FormControl(''),
-            'updateUser': new FormControl({ disabled: true })
-        });
     }
 
 
@@ -125,12 +132,11 @@ export class CustomerComponent implements OnInit {
      * @returns {void}
      */
     getStatusValues() {
-        this.statuses.push({ label: '0 - No contact', value: 'No contact' });
-        this.statuses.push({ label: '1 - Engaged Team', value: 'Engaged Team' });
-        this.statuses.push({ label: '2 - Design Complete', value: 'Design Complete' });
-        this.statuses.push({ label: '3 - Implementation Complete', value: 'Implementation Complete' });
-        this.statuses.push({ label: '4 - Migration Complete', value: 'Migration Complete' });
-        this.statuses.push({ label: 'Basic - No P28', value: 'Basic - No P28' });
+        this.statuses.push({ label: '1 - ESSS IPM Assigned', value: 'ESSS IPM Assigned' });
+        this.statuses.push({ label: '2 - CSOW in progress', value: 'CSOW in Progress' });
+        this.statuses.push({ label: '3 - Design Complete', value: 'Design Complete' });
+        this.statuses.push({ label: '4 - Implementation Complete', value: 'Implementation Complete' });
+        this.statuses.push({ label: '5 - Migration Complete', value: 'Migration Complete' });
     }
 
 
@@ -288,7 +294,7 @@ export class CustomerComponent implements OnInit {
      * @returns {void}
      */
     updateChart() {
-        let statusLabels: String[] = this.getChartLabels('status');
+        let statusLabels: string[] = this.getChartLabels('status');
         let statusCounts: number[] = this.getChartData(statusLabels, 'status');
         let colors: string[] = [
             '#ff6384',
@@ -326,7 +332,7 @@ export class CustomerComponent implements OnInit {
         };
 
         if (this.isAdmin()) {
-            let userLabels: String[] = this.getChartLabels('user');
+            let userLabels: string[] = this.getChartLabels('user');
             let userCounts: number[] = this.getChartData(userLabels, 'user');
             //console.log(userLabels);
             //console.log(userCounts);
@@ -343,12 +349,33 @@ export class CustomerComponent implements OnInit {
                 },
                 tooltips: {
                     bodyFontSize: 14
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            stepSize: 1
+                        },
+                        scaleLabel: {
+                            labelString: 'Customers'
+                        }
+                    }],
+                    xAxes: [{
+                        stacked: false,
+                        scaleLabel: {
+                            labelString: 'IPM'
+                        },
+                        ticks: {
+                            autoSkip: false
+                        }
+                    }]
                 }
             };
             this.customerUserChartData = {
                 labels: userLabels,
                 datasets: [
                     {
+                        label: 'Assigned H1s',
                         data: userCounts,
                         backgroundColor: colors,
                         hoverBackgroundColor: colors
@@ -363,10 +390,10 @@ export class CustomerComponent implements OnInit {
      *                  Pass in the name of a property of the customer object.
      *
      * @param  {string} customerProperty string property name of a customer object
-     * @returns {String[]} Array of distinct strings for a property of the customer array.  Used as labels in Chart.js
+     * @returns {string[]} Array of distinct strings for a property of the customer array.  Used as labels in Chart.js
      */
-    getChartLabels(customerProperty: string): String[] {
-        let labels: String[] = [];
+    getChartLabels(customerProperty: string): string[] {
+        let labels: string[] = [];
         for (let i = 0; i < this.customers.length; i++) {
             let foundmatch: boolean = false;
             for (let j = 0; j < labels.length; j++) {
@@ -386,11 +413,11 @@ export class CustomerComponent implements OnInit {
      * getChartLabels - Returns an array of numbers that represent the count of each label in the customer array.
      *                  Used as data for Chart.js.
      *
-     * @param  {String[]} labels  Array of distinct strings for a property of the customer array.
+     * @param  {string[]} labels  Array of distinct strings for a property of the customer array.
      * @param  {string} customerProperty  The property in a customer to count for each label.
      * @returns {number[]} Array of numbers/counts for input label values.  Used as data in Chart.js
      */
-    getChartData(labels: String[], customerProperty: string): number[] {
+    getChartData(labels: string[], customerProperty: string): number[] {
         let counts: number[] = [];
         for (let i = 0; i < labels.length; i++) {
             counts.push(0);

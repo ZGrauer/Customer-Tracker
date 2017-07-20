@@ -16,8 +16,8 @@ import { Message } from 'primeng/primeng';
     templateUrl: './signin.component.html'
 })
 export class SigninComponent implements OnInit {
-    email: String;
-    password: String;
+    email: string;
+    password: string;
     displayDialog: boolean = false;
     loginform: FormGroup;
     msgs: Message[] = [];

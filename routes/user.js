@@ -42,6 +42,16 @@ router.get('/', function(req, res, next) {
  * @returns {object} json object with title and message indicating success or error
  */
 router.post('/', function(req, res, next) {
+    var decoded = jwt.decode(req.query.token);
+
+    if (!decoded.user.admin) {
+        return res.status(500).json({
+            title: 'Not Authorized',
+            error: {
+                message: 'User not authorized'
+            }
+        });
+    }
     var user = new User({
         firstName: req.body.firstName,
         lastName: req.body.lastName,
@@ -50,7 +60,7 @@ router.post('/', function(req, res, next) {
         admin: req.body.admin,
         deleted: req.body.deleted
     });
-    //console.log(req);
+
     user.save(function(err, result) {
         if (err) {
             return res.status(500).json({

@@ -24,7 +24,8 @@ export class HeaderComponent implements OnInit {
     ngOnInit() {
         this.items = [
             {label: 'Customers', icon: 'fa-table' , routerLink: ['customers']},
-            {label: 'Login/Logout', icon: ' fa-sign-in', routerLink: ['auth']}
+            {label: 'Info & Resources', icon: 'fa-info-circle', routerLink: ['info']},
+            {label: 'Login/Logout', icon: 'fa-sign-in', routerLink: ['auth']}
         ];
 
     }

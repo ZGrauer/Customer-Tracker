@@ -1,10 +1,14 @@
-<p-dataTable #dt [value]="customers" selectionMode="single" [(selection)]="selectedCustomer" (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15" [responsive]="true" [immutable]="false">
+<div class="ui-widget-header" style="padding:4px 10px;border-bottom: 0 none">
+    <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
+    <input #gb type="text" pInputText size="50" placeholder="Global Search">
+</div>
+<p-dataTable #dt [value]="customers" selectionMode="single" [(selection)]="selectedCustomer" (onRowSelect)="onRowSelect($event)" [paginator]="true" [rows]="15" [responsive]="true" [immutable]="false" [globalFilter]="gb" resizableColumns="true">
     <p-header>Customers</p-header>
-    <p-column field="h1" header="H1" [sortable]="true"></p-column>
-    <p-column field="name" header="Cust Name" [sortable]="true"></p-column>
+    <p-column field="h1" header="H1" [sortable]="true" [filter]="true" filterPlaceholder="Search"></p-column>
+    <p-column field="name" header="Cust Name" [sortable]="true" [filter]="true" filterPlaceholder="Search"></p-column>
     <p-column field="status" header="Build Status" [sortable]="true"></p-column>
-    <p-column field="note" header="Note" [sortable]="false"></p-column>
     <p-column field="user" header="ESSS IPM" [sortable]="true"></p-column>
+    <p-column field="note" header="Note" [sortable]="false"></p-column>
     <p-column field="initialDt" header="Initial Contact" [sortable]="true">
         <ng-template let-col let-bol="rowData" pTemplate="body">
             <span>{{bol[col.field] | date: 'shortDate'}}</span>
@@ -31,8 +35,8 @@
         <div class="ui-grid-col-4">
             <app-chart [type]="pieChartType" [options]="customerStatusChartOptions" [data]="customerStatusChartData"></app-chart>
         </div>
-        <div class="ui-grid-col-4">
-            <app-chart *ngIf="isAdmin()" [type]="pieChartType" [options]="customerUserChartOptions" [data]="customerUserChartData"></app-chart>
+        <div class="ui-grid-col-8">
+            <app-chart *ngIf="isAdmin()" [type]="barChartType" [options]="customerUserChartOptions" [data]="customerUserChartData"></app-chart>
         </div>
     </div>
 </div>
@@ -96,7 +100,7 @@
             <div class="ui-grid-row">
                 <div class="ui-grid-col-3"><label for="updateUser">Last Update By</label></div>
                 <div class="ui-grid-col-6">
-                    <p-dropdown [options]="userSelection" formControlName="updateUser" [(ngModel)]="customer._updateUserId" [style]="{'width':'238px'}" [disabled]="true"></p-dropdown>
+                    <p-dropdown [options]="userSelectionAll" formControlName="updateUser" [(ngModel)]="customer._updateUserId" [style]="{'width':'238px'}" [disabled]="true"></p-dropdown>
                 </div>
             </div>
         </div>

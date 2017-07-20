@@ -16,6 +16,7 @@ import { HeaderComponent } from './header.component';
 import { routing } from './app.routing';
 import { ErrorService } from './error/error.service';
 import { ErrorComponent } from './error/error.component';
+import { InfoComponent } from './info/info.component';
 import {
     InputTextModule,
     ButtonModule,
@@ -34,6 +35,7 @@ import 'rxjs/add/operator/toPromise';
     declarations: [
         AppComponent,
         AuthenticationComponent,
+        InfoComponent,
         HeaderComponent,
         SignupComponent,
         SigninComponent,

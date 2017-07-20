@@ -108,6 +108,7 @@ export class CustomerService {
      * @returns {Observable} Observable Response from the server. Success or Error to be displayed in Growl
      */
     updateCustomer(customer: Customer) {
+        customer.updateDt = new Date();
         const body = JSON.stringify(customer);
         const headers = new Headers({ 'Content-Type': 'application/json' });
         const token = localStorage.getItem('token')
