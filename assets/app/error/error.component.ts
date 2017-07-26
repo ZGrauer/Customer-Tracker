@@ -32,7 +32,7 @@ export class ErrorComponent implements OnInit {
 
     showMsg() {
         var severity: string = '';
-        if (this.msg.title == 'Error' || this.msg.title == 'Success') {
+        if (this.msg.title == 'Error' || this.msg.title == 'Success'|| this.msg.title == 'Warn') {
             severity = this.msg.title.toLowerCase();
         } else {
             severity = 'info';

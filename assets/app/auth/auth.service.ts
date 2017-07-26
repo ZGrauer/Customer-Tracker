@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Response, Headers } from '@angular/http';
+import { Router } from "@angular/router";
 
 import 'rxjs/Rx';
 import { Observable } from 'rxjs/Rx';
@@ -11,7 +12,11 @@ import { ErrorService } from '../error/error.service';
 export class AuthService {
     private users: User[] = [];
 
-    constructor(private http: Http, private errorService: ErrorService) { }
+    constructor(
+        private http: Http,
+        private router: Router,
+        private errorService: ErrorService
+    ) { }
 
 
     /**
@@ -86,6 +91,49 @@ export class AuthService {
         return localStorage.getItem('userId');
     }
 
+    getLoginTime(): string {
+        return localStorage.getItem('timestamp');
+    }
+
+    /**
+     * Compares to date values in miliseconds.  If difference is greater than 8 hours, clears localStorage.
+     *
+     * @param  {string} loginDateTime string of date time in miliseconds. Represents the login time from localStorage.
+     * @param  {string} now string of date time in miliseconds. Current time
+     * @returns {void}
+     */
+    checkTokenExpired(loginDateTime: string, now: string) {
+        if (loginDateTime == null) {
+            localStorage.clear();
+            this.router.navigateByUrl('/');
+            console.log('Error! No login time found');
+
+            let error = {
+                title: 'Error',
+                error: {
+                    message: 'No login time found.  Logged out'
+                }
+            };
+            this.errorService.handleError(error);
+        } else {
+            let loginTime: number = parseInt(loginDateTime);
+            let nowTime: number = parseInt(now);
+            let hoursDifference: number = (nowTime - loginTime) / 1000 / 60 / 60;
+            //console.log(hoursDifference);
+            if (hoursDifference > 8) {
+                localStorage.clear();
+                this.router.navigateByUrl('/');
+                console.log('Token expired, logging out');
+                let error = {
+                title: 'Warn',
+                error: {
+                    message: 'Token expired.  Logged out'
+                }
+            };
+            this.errorService.handleError(error);
+            }
+        }
+    }
 
     /**
      * deleteUser - deletes the passed in user from the database

@@ -39,6 +39,7 @@ export class SigninComponent implements OnInit {
                     localStorage.setItem('userId', data.userId);
                     localStorage.setItem('admin', data.admin);
                     localStorage.setItem('deleted', data.deleted);
+                    localStorage.setItem('timestamp', new Date().getTime().toString());
                     this.router.navigateByUrl('/');
                 },
                 error => {

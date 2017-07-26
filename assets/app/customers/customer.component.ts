@@ -49,6 +49,15 @@ export class CustomerComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+        if (this.authService.isLoggedIn()) {
+            let loginDateTime = this.authService.getLoginTime();
+            let now = new Date().getTime().toString();
+
+            //console.log(loginDateTime);
+            //console.log(now);
+            this.authService.checkTokenExpired(loginDateTime, now);
+        }
+
         // Populates the customer array via the customer service
         this.getCustomers();
         // Populates array of all users for dropdowns in add/edit modal
@@ -287,21 +296,28 @@ export class CustomerComponent implements OnInit {
         });
     }
 
-
     /**
      * updateChart - Sets the Chart.js data and labels based on the customers array.
      *
      * @returns {void}
      */
     updateChart() {
-        let statusLabels: string[] = this.getChartLabels('status');
+        //let statusLabels: string[] = this.getChartLabels('status');
+        let statusLabels: string[] = ['ESSS IPM Assigned', 'CSOW in Progress', 'Design Complete', 'Implementation Complete', 'Migration Complete'];
         let statusCounts: number[] = this.getChartData(statusLabels, 'status');
         let colors: string[] = [
             '#ff6384',
-            '#36a2eb',
+            '#ff9f40',
             '#ffce56',
-            '#4bc0c0',
-            '#ff9f40'
+            '#36a2eb',
+            '#4bc0c0'
+        ];
+        let colorsHover: string[] = [
+            '#ff335f',
+            '#ff8c1a',
+            '#ffc533',
+            '#1794e8',
+            '#3caaaa'
         ];
 
         //console.log(statusLabels);
@@ -327,14 +343,25 @@ export class CustomerComponent implements OnInit {
                 {
                     data: statusCounts,
                     backgroundColor: colors,
-                    hoverBackgroundColor: colors
+                    hoverBackgroundColor: colorsHover
                 }]
         };
 
         if (this.isAdmin()) {
             let userLabels: string[] = this.getChartLabels('user');
-            let userCounts: number[] = this.getChartData(userLabels, 'user');
+            //let userCounts: number[] = this.getChartData(userLabels, 'user');
+            let userAssignedCounts: number[] = this.getChartData(userLabels, 'user', 'ESSS IPM Assigned');
+            let userCSOWCounts: number[] = this.getChartData(userLabels, 'user', 'CSOW in Progress');
+            let userDesignedCounts: number[] = this.getChartData(userLabels, 'user', 'Design Complete');
+            let userImpCounts: number[] = this.getChartData(userLabels, 'user', 'Implementation Complete');
+            let userCompCounts: number[] = this.getChartData(userLabels, 'user', 'Migration Complete');
+
             //console.log(userLabels);
+            //console.log(userAssignedCounts);
+            //console.log(userCSOWCounts);
+            //console.log(userDesignedCounts);
+            //console.log(userImpCounts);
+            //console.log(userCompCounts);
             //console.log(userCounts);
             this.customerUserChartOptions = {
                 title: {
@@ -352,6 +379,7 @@ export class CustomerComponent implements OnInit {
                 },
                 scales: {
                     yAxes: [{
+                        stacked: true,
                         ticks: {
                             beginAtZero: true,
                             stepSize: 1
@@ -361,7 +389,7 @@ export class CustomerComponent implements OnInit {
                         }
                     }],
                     xAxes: [{
-                        stacked: false,
+                        stacked: true,
                         scaleLabel: {
                             labelString: 'IPM'
                         },
@@ -371,14 +399,39 @@ export class CustomerComponent implements OnInit {
                     }]
                 }
             };
+
             this.customerUserChartData = {
                 labels: userLabels,
                 datasets: [
                     {
-                        label: 'Assigned H1s',
-                        data: userCounts,
-                        backgroundColor: colors,
-                        hoverBackgroundColor: colors
+                        label: 'IPM Assigned',
+                        data: userAssignedCounts,
+                        backgroundColor: colors[0],
+                        hoverBackgroundColor: colorsHover[0]
+                    },
+                    {
+                        label: 'CSOW in Progress',
+                        data: userCSOWCounts,
+                        backgroundColor: colors[1],
+                        hoverBackgroundColor: colorsHover[1]
+                    },
+                    {
+                        label: 'Design Complete',
+                        data: userDesignedCounts,
+                        backgroundColor: colors[2],
+                        hoverBackgroundColor: colorsHover[2]
+                    },
+                    {
+                        label: 'Implementation Complete',
+                        data: userImpCounts,
+                        backgroundColor: colors[3],
+                        hoverBackgroundColor: colorsHover[3]
+                    },
+                    {
+                        label: 'Migration Complete',
+                        data: userCompCounts,
+                        backgroundColor: colors[4],
+                        hoverBackgroundColor: colorsHover[4]
                     }]
             };
         }
@@ -415,14 +468,17 @@ export class CustomerComponent implements OnInit {
      *
      * @param  {string[]} labels  Array of distinct strings for a property of the customer array.
      * @param  {string} customerProperty  The property in a customer to count for each label.
+     * @param  {string} status  Optional status value to filter by
      * @returns {number[]} Array of numbers/counts for input label values.  Used as data in Chart.js
      */
-    getChartData(labels: string[], customerProperty: string): number[] {
+    getChartData(labels: string[], customerProperty: string, status?: string): number[] {
         let counts: number[] = [];
         for (let i = 0; i < labels.length; i++) {
             counts.push(0);
             for (let j = 0; j < this.customers.length; j++) {
-                if (labels[i] == this.customers[j][customerProperty]) {
+                if (status != null && status == this.customers[j].status && labels[i] == this.customers[j][customerProperty]) {
+                    counts[i]++;
+                } else if (status == null && labels[i] == this.customers[j][customerProperty]) {
                     counts[i]++;
                 }
             }
