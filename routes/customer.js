@@ -147,7 +147,8 @@ router.post('/', function(req, res, next) {
                 user: ipm,
                 initialDt: req.body.initialDt,
                 updateDt: req.body.updateDt,
-                updateUser: user
+                updateUser: user,
+                loeTotalHours: req.body.loeTotalHours
             });
             //console.log('Customer: ');
             //console.log(customer);
@@ -219,6 +220,7 @@ router.patch('/:id', function(req, res, next) {
         customer.updateDt = req.body.updateDt;
         customer.updateUser = req.body._updateUserId;
         customer.deleted = req.body.deleted;
+        customer.loeTotalHours = req.body.loeTotalHours;
         customer.save(function(err, result) {
             if (err) {
                 return res.status(500).json({

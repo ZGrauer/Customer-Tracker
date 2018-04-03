@@ -41,6 +41,10 @@ var schema = new Schema({
     updateUser: {
         type: Schema.Types.ObjectId,
         ref: 'User'
+    },
+    loeTotalHours: {
+        type: Number,
+        default: 0
     }
 });
 

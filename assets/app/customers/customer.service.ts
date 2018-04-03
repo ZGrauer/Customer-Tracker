@@ -44,7 +44,8 @@ export class CustomerService {
                     new Date(moment(result.obj.updateDt).format('MM/DD/YYYY')),
                     result.obj.user.firstName + ' ' + result.obj.user.lastName,
                     result.obj._id,
-                    result.obj.user._id
+                    result.obj.user._id,
+                    result.obj.loeTotalHours
                 );
                 this.customers.push(customer);
                 this.errorService.handleError(response.json());
@@ -87,7 +88,8 @@ export class CustomerService {
                         customer.updateUser.firstName + ' ' + customer.updateUser.lastName,
                         customer._id,
                         customer.user._id,
-                        customer.updateUser._id
+                        customer.updateUser._id,
+                        customer.loeTotalHours
                     ));
                 }
                 this.customers = transformedCustomers;

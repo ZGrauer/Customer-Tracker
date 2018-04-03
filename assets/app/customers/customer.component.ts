@@ -16,7 +16,8 @@ import { SelectItem, ConfirmationService, Message } from 'primeng/primeng';
     selector: 'app-customer',
     templateUrl: './customer.component.html',
     encapsulation: ViewEncapsulation.None,
-    providers: [ConfirmationService]
+    providers: [ConfirmationService],
+    styles: ['zero-hours:nth-child(1) { background-color: #ff0000 !important }']
 })
 
 export class CustomerComponent implements OnInit {
@@ -37,6 +38,8 @@ export class CustomerComponent implements OnInit {
     barChartType: string = 'bar';   // Sent to chart component to determine Chart.js type
     customerStatusChartData: any;   // Status summary chart data for Chart.js
     customerStatusChartOptions: any;    // Status summary chart options for Chart.js
+    billedChartData: any;   // LOE Billed summary chart data for Chart.js
+    billedChartOptions: any;    // LOE Billed summary chart options for Chart.js
     customerUserChartData: any;     // User count chart data
     customerUserChartOptions: any;  // Chart options
 
@@ -68,6 +71,7 @@ export class CustomerComponent implements OnInit {
             'h1': new FormControl('', Validators.compose([Validators.required, Validators.minLength(9), Validators.maxLength(9)])),
             'name': new FormControl('', Validators.required),
             'status': new FormControl('', Validators.required),
+            'loeTotalHours': new FormControl(''),
             'note': new FormControl(''),
             'ipm': new FormControl('', Validators.required),
             'initialDt': new FormControl(''),
@@ -100,11 +104,11 @@ export class CustomerComponent implements OnInit {
         this.customerService.getCustomers(this.showAllCustomers)
 
             .subscribe(
-            (customers: Customer[]) => {
-                //console.log(customers);
-                this.customers = customers;
-                this.updateChart();
-            }
+                (customers: Customer[]) => {
+                    //console.log(customers);
+                    this.customers = customers;
+                    this.updateChart();
+                }
             );
     }
 
@@ -120,16 +124,16 @@ export class CustomerComponent implements OnInit {
     getUsers() {
         this.authService.getUsers()
             .subscribe(
-            (users: User[]) => {
-                this.users = users;
-                this.userSelection.push({ label: 'Select IPM', value: null });
-                this.users.forEach(u => {
-                    this.userSelectionAll.push({ label: u.firstName + ' ' + u.lastName, value: u._id });
-                    if (!u.admin) {
-                        this.userSelection.push({ label: u.firstName + ' ' + u.lastName, value: u._id });
-                    }
-                });
-            }
+                (users: User[]) => {
+                    this.users = users;
+                    this.userSelection.push({ label: 'Select IPM', value: null });
+                    this.users.forEach(u => {
+                        this.userSelectionAll.push({ label: u.firstName + ' ' + u.lastName, value: u._id });
+                        if (!u.admin) {
+                            this.userSelection.push({ label: u.firstName + ' ' + u.lastName, value: u._id });
+                        }
+                    });
+                }
             );
         this.currentUserId = this.authService.getUserId();
     }
@@ -159,23 +163,23 @@ export class CustomerComponent implements OnInit {
         if (this.newCustomer) {
             this.customerService.addCustomer(this.customer)
                 .subscribe(
-                data => {
-                    console.log(data);
-                    this.updateChart();
-                    this.router.navigateByUrl('/');
-                },
-                error => console.log(error)
+                    data => {
+                        console.log(data);
+                        this.updateChart();
+                        this.router.navigateByUrl('/');
+                    },
+                    error => console.log(error)
                 );
         } else {
             this.customers[this.findSelectedCustomerIndex()] = this.customer;
             this.customerService.updateCustomer(this.customer)
                 .subscribe(
-                result => {
-                    console.log(result);
-                    this.updateChart();
-                    this.router.navigateByUrl('/');
-                },
-                error => console.log(error)
+                    result => {
+                        console.log(result);
+                        this.updateChart();
+                        this.router.navigateByUrl('/');
+                    },
+                    error => console.log(error)
                 );
         }
 
@@ -193,10 +197,10 @@ export class CustomerComponent implements OnInit {
     delete() {
         this.customerService.deleteCustomer(this.selectedCustomer)
             .subscribe(
-            result => {
-                console.log(result);
-                this.updateChart();
-            }
+                result => {
+                    console.log(result);
+                    this.updateChart();
+                }
             );
         this.customer = null;
         this.displayDialog = false;
@@ -347,6 +351,46 @@ export class CustomerComponent implements OnInit {
                 }]
         };
 
+
+        let billedLabels: string[] = ['0 Hours', '1+ Hours'];
+        let billedCounts: number[] = this.getBilledChartData();
+        let billedColors: string[] = [
+            '#ff6384',
+            '#4bc0c0'
+        ];
+        let billedColorsHover: string[] = [
+            '#ff335f',
+            '#3caaaa'
+        ];
+
+        //console.log(statusLabels);
+        //console.log(statusCounts);
+        this.billedChartOptions = {
+            title: {
+                display: true,
+                text: 'LOE Billed Customers',
+                fontSize: 22
+            },
+            legend: {
+                labels: {
+                    fontSize: 16
+                }
+            },
+            tooltips: {
+                bodyFontSize: 14
+            }
+        };
+        this.billedChartData = {
+            labels: billedLabels,
+            datasets: [
+                {
+                    data: billedCounts,
+                    backgroundColor: billedColors,
+                    hoverBackgroundColor: billedColorsHover
+                }]
+        };
+
+
         if (this.isAdmin()) {
             let userLabels: string[] = this.getChartLabels('user');
             //let userCounts: number[] = this.getChartData(userLabels, 'user');
@@ -481,6 +525,25 @@ export class CustomerComponent implements OnInit {
                 } else if (status == null && labels[i] == this.customers[j][customerProperty]) {
                     counts[i]++;
                 }
+            }
+        }
+        return counts;
+    }
+
+
+    /**
+     * getBilledData - Returns an array of numbers that represent the count of each label in the customer array.
+     *                  Used as data for Chart.js.
+     *
+     * @returns {number[]} Array of numbers/counts for input label values.  Used as data in Chart.js
+     */
+    getBilledChartData(): number[] {
+        let counts: number[] = [0, 0];
+        for (let j = 0; j < this.customers.length; j++) {
+            if (this.customers[j].loeTotalHours == 0) {
+                counts[0]++;
+            } else if (this.customers[j].loeTotalHours != 0) {
+                counts[1]++;
             }
         }
         return counts;

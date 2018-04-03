@@ -10,6 +10,7 @@ export class Customer {
                 public updateUser: string,
                 public _id?:string,
                 public _userId?:string,
-                public _updateUserId?:string
+                public _updateUserId?:string,
+                public loeTotalHours?:Number
             ) {}
 }
