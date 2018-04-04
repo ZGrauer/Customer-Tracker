@@ -43,6 +43,7 @@ var schema = new Schema({
         ref: 'User'
     },
     loeTotalHours: {
+        required: true,
         type: Number,
         default: 0
     }

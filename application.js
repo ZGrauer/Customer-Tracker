@@ -12,8 +12,8 @@ var userRoutes = require('./routes/user');
 
 var app = express();
 // Build the connection string
-//var dbURI = 'mongodb://localhost:27017/customer-tracker';    // PROD on local machine
-var dbURI = 'mongodb://w4339804:27017/customer-tracker';    // PROD from remote machine
+var dbURI = 'mongodb://localhost:27017/customer-tracker';    // PROD on local machine
+//var dbURI = 'mongodb://w4339804:27017/customer-tracker';    // PROD from remote machine
 mongoose.connect(dbURI); // Config with port and database name from MongoDB
 
 // CONNECTION EVENTS
@@ -37,7 +37,6 @@ mongoose.connection.on('disconnected', function () {
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
-// uncomment after placing your favicon in /public
 app.use(favicon(path.join(__dirname, 'public', 'images', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());

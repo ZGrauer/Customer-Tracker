@@ -109,7 +109,14 @@
                     <input pInputText id="loeTotalHours" formControlName="loeTotalHours" [(ngModel)]="customer.loeTotalHours" placeholder="0"
                     />
                 </div>
+                <div class="ui-grid-col-3">
+                    <div class="ui-message ui-messages-error ui-corner-all" *ngIf="!customerform.controls['loeTotalHours'].valid&&customerform.controls['loeTotalHours'].dirty">
+                        <i class="fa fa-times-circle"></i>
+                        <span *ngIf="customerform.controls['loeTotalHours'].errors['required']">Hours is required</span>
+                    </div>
+                </div>
             </div>
+            
             <div class="ui-grid-row">
                 <div class="ui-grid-col-3">
                     <label for="note">Note</label>

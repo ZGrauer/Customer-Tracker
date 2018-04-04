@@ -71,7 +71,7 @@ export class CustomerComponent implements OnInit {
             'h1': new FormControl('', Validators.compose([Validators.required, Validators.minLength(9), Validators.maxLength(9)])),
             'name': new FormControl('', Validators.required),
             'status': new FormControl('', Validators.required),
-            'loeTotalHours': new FormControl(''),
+            'loeTotalHours': new FormControl('', Validators.required),
             'note': new FormControl(''),
             'ipm': new FormControl('', Validators.required),
             'initialDt': new FormControl(''),
@@ -89,7 +89,7 @@ export class CustomerComponent implements OnInit {
     showDialogToAdd() {
         if (this.isAdmin()) {
             this.newCustomer = true;
-            this.customer = new Customer(null, '', '', '', '', new Date(), new Date(), '');
+            this.customer = new Customer(null, '', '', '', '', new Date(), new Date(), '', '', '', '', 0);
             this.displayDialog = true;
         }
     }
