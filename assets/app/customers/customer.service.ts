@@ -116,7 +116,7 @@ export class CustomerService {
         const token = localStorage.getItem('token')
             ? '?token=' + localStorage.getItem('token')
             : '';
-        console.log(customer);
+        //console.log(customer);
         return this.http.patch('customer/' + customer._id + token, body, { headers: headers })
             .map((response: Response) => {
                 //console.log(response);

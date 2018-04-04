@@ -219,8 +219,8 @@ router.patch('/:id', function(req, res, next) {
         customer.initialDt = req.body.initialDt;
         customer.updateDt = req.body.updateDt;
         customer.updateUser = req.body._updateUserId;
-        customer.deleted = req.body.deleted;
         customer.loeTotalHours = req.body.loeTotalHours;
+        //console.log(customer);
         customer.save(function(err, result) {
             if (err) {
                 return res.status(500).json({
