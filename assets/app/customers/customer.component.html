@@ -106,7 +106,7 @@
                     <label for="h1">Total Hours Billed</label>
                 </div>
                 <div class="ui-grid-col-6">
-                    <input pInputText id="loeTotalHours" formControlName="loeTotalHours" [(ngModel)]="customer.loeTotalHours" placeholder="0"
+                    <input pInputText id="loeTotalHours" formControlName="loeTotalHours" [(ngModel)]="customer.loeTotalHours" placeholder="0" 
                     />
                 </div>
                 <div class="ui-grid-col-3">
@@ -137,22 +137,22 @@
                     <label for="initialDt">Initial Contact Date</label>
                 </div>
                 <div class="ui-grid-col-8">
-                    <p-calendar id="initialDt" formControlName="initialDt" [(ngModel)]="customer.initialDt" [inline]="true" [disabled]="!newCustomer"></p-calendar>
+                    <p-calendar id="initialDt" formControlName="initialDt" [(ngModel)]="customer.initialDt" [inline]="newCustomer" [disabled]="!newCustomer"></p-calendar>
                 </div>
             </div>
-            <div class="ui-grid-row">
-                <div class="ui-grid-col-3">
+            <div class="ui-grid-row" [hidden]="hideCustomerDialog">
+                <div class="ui-grid-col-3" [hidden]="hideCustomerDialog">
                     <label for="updateDt">Last Update Date</label>
                 </div>
-                <div class="ui-grid-col-6">
+                <div class="ui-grid-col-6" [hidden]="hideCustomerDialog">
                     <p-calendar id="updateDt" formControlName="updateDt" [(ngModel)]="customer.updateDt" [disabled]="true"></p-calendar>
                 </div>
             </div>
-            <div class="ui-grid-row">
-                <div class="ui-grid-col-3">
+            <div class="ui-grid-row" [hidden]="hideCustomerDialog">
+                <div class="ui-grid-col-3" [hidden]="hideCustomerDialog">
                     <label for="updateUser">Last Update By</label>
                 </div>
-                <div class="ui-grid-col-6">
+                <div class="ui-grid-col-6" [hidden]="hideCustomerDialog">
                     <p-dropdown [options]="userSelectionAll" formControlName="updateUser" [(ngModel)]="customer._updateUserId" [style]="{'width':'238px'}"
                         [disabled]="true"></p-dropdown>
                 </div>

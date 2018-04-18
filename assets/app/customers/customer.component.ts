@@ -42,6 +42,7 @@ export class CustomerComponent implements OnInit {
     billedChartOptions: any;    // LOE Billed summary chart options for Chart.js
     customerUserChartData: any;     // User count chart data
     customerUserChartOptions: any;  // Chart options
+    hideCustomerDialog: boolean = true;  // Use ng-hide to hide specific elements to shorten dialog
 
     constructor(
         private customerService: CustomerService,
